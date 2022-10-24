@@ -1,7 +1,8 @@
 # Codecamp Instructions
 
-- docker build -tcc22/game-api
+- docker build -t cc22/game-api
 - docker run -p 8080:8080 cc22/game-api
+- http://127.0.0.1:3000/people
 
 
 
