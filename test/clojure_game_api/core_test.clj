@@ -27,3 +27,18 @@
            (is (thrown-with-msg? Exception #"field already set" (makeMove board :A1, :O)))))
 
 ; add test to validate state of the board, not only coordinates
+(deftest boardIsValid
+  (def board {:B2 :O :A1 :X})
+  (testing "board is valid"
+           (is (= true (validateBoard board)))))
+
+(deftest boardHasInvalidKey
+  (def board {:B2 :O :A1 :X, :G3 :O})
+  (testing "board has invalid key"
+           (is (= false (validateBoard board)))))
+
+(deftest boardHasInvalidValue
+  (def board {:B2 :O :A1 :Z})
+  (testing "board has invalid value"
+           (is (= false (validateBoard board)))))
+

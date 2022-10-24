@@ -5,6 +5,7 @@
             [ring.middleware.defaults :refer :all]
             [clojure.pprint :as pp]
             [clojure.string :as str]
+            [clojure.set :as set]
             [clojure.data.json :as json])
   (:gen-class))
 
@@ -16,6 +17,11 @@
 
 (def initalBoard {})
 
+(defn validateBoard [board]
+  (and (set/subset? (keys board) validCoordinates)
+       (set/subset? (into #{} (vals board)) validValues)
+  ))
+
 (defn makeMove [board coordinate value]
   (if (not (contains? validCoordinates coordinate))
     (throw (Exception. (str "invalid field " coordinate))))
@@ -23,6 +29,8 @@
     (throw (Exception. (str "invalid value " value))))
   (if (contains? board coordinate)
     (throw (Exception. (str "field already set" coordinate))))
+  (if (not (validateBoard board))
+    (throw (Exception. "board is invalid")))
 
   (conj board {coordinate value}))
 
