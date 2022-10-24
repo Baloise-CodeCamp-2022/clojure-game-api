@@ -13,13 +13,14 @@
 
 (defn makeMove [board coordinate value]
   (if (not (contains? #{:A1, :A2, :A3, :B1, :B2, :B3, :C1, :C2, :C3} coordinate))
-    (throw (Exception. (str "invalid field " coordinate)))
-    (println "OK"))
+    (throw (Exception. (str "invalid field " coordinate))))
+  (if (not (contains? #{:X, :O} value))
+    (throw (Exception. (str "invalid value " value))))
 
   (conj board {coordinate value}))
 
-(makeMove nil :A1 true)
-(makeMove nil :B2 true)
+(makeMove nil :A1 :X)
+(makeMove nil :B2 :O)
 
 (defn tictactoe-handler [req]
   {:status  200
