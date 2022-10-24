@@ -7,6 +7,7 @@
     (is (= 1 1))))
 
 (deftest first
-  (def board [{:A1 true} {:B2 true}])
+  (def board #{ {:B2 true} {:A1 true} })
+  (def expected #{{:A1 true} {:B2 true} {:A2 true}})
   (testing "first board test"
-    (is (= [{:A1 true} {:B2 true} {:A2 true}] (makeMove board :A2, true)))))
+    (is (= expected (makeMove board :A2, true)))))
