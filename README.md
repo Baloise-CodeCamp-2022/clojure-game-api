@@ -1,3 +1,8 @@
+# Codecamp Instructions
+
+- docker build -tcc22/game-api
+- docker run -p 8080:8080 cc22/game-api
+
 # clojure-game-api
 
 FIXME: description
