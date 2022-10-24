@@ -11,11 +11,18 @@
 ; ------------------- TicTacToe --------------------------------
 (def tictactoe-board (atom []))
 
+(def validCoordinates #{:A1, :A2, :A3, :B1, :B2, :B3, :C1, :C2, :C3})
+(def validValues #{:X, :O})
+
+(def initalBoard {})
+
 (defn makeMove [board coordinate value]
-  (if (not (contains? #{:A1, :A2, :A3, :B1, :B2, :B3, :C1, :C2, :C3} coordinate))
+  (if (not (contains? validCoordinates coordinate))
     (throw (Exception. (str "invalid field " coordinate))))
-  (if (not (contains? #{:X, :O} value))
+  (if (not (contains? validValues value))
     (throw (Exception. (str "invalid value " value))))
+  (if (contains? board coordinate)
+    (throw (Exception. (str "field already set" coordinate))))
 
   (conj board {coordinate value}))
 
