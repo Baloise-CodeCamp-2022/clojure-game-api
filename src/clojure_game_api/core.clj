@@ -1,20 +1,26 @@
 (ns clojure-game-api.core
-    (:require [org.httpkit.server :as server]
-              [compojure.core :refer :all]
-              [compojure.route :as route]
-              [ring.middleware.defaults :refer :all]
-              [clojure.pprint :as pp]
-              [clojure.string :as str]
-              [clojure.data.json :as json])
-    (:gen-class))
+  (:require [org.httpkit.server :as server]
+            [compojure.core :refer :all]
+            [compojure.route :as route]
+            [ring.middleware.defaults :refer :all]
+            [clojure.pprint :as pp]
+            [clojure.string :as str]
+            [clojure.data.json :as json])
+  (:gen-class))
+
 ; ------------------- TicTacToe --------------------------------
 (def tictactoe-board (atom []))
+
 (defn makeMove [board coordinate value]
-  (if (= :F19 coordinate) (throw (Exception. "invalid field")) (println "OK"))
+  (if (not (contains? #{:A1, :A2, :A3, :B1, :B2, :B3, :C1, :C2, :C3} coordinate))
+    (throw (Exception. (str "invalid field " coordinate)))
+    (println "OK"))
 
   (conj board {coordinate value}))
+
 (makeMove nil :A1 true)
 (makeMove nil :B2 true)
+
 (defn tictactoe-handler [req]
   {:status  200
    :headers {"Content-Type" "text/json"}

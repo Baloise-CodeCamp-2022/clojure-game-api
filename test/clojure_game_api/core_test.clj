@@ -16,5 +16,5 @@
   (def board #{{:B2 true} {:A1 true}})
   (def expected #{{:A1 true} {:B2 true} {:A2 true}})
   (testing "first board test"
-           (is (thrown-with-msg? Exception #"invalid field" (makeMove board :F19, true)))))
+           (is (thrown-with-msg? Exception #"invalid field :F19" (makeMove board :F19, true)))))
 
