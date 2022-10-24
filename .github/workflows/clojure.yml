@@ -29,3 +29,8 @@ jobs:
       run: |
         docker build -t ghcr.io/baloise-codecamp-2022/clojure-game-api:${{ github.sha }} .
         docker push ghcr.io/baloise-codecamp-2022/clojure-game-api:${{ github.sha }}
+
+    - name: Tag latest for main builds
+      if: github.ref == 'refs/heads/main'
+      run: |
+        docker push ghcr.io/baloise-codecamp-2022/clojure-game-api:latest
