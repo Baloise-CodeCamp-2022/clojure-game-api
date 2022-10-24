@@ -17,13 +17,15 @@ jobs:
       run: lein deps
     - name: Run tests
       run: lein test
+    - name: Run build uberjar
+      run: lein uberjar
     - name: Docker login to Container-Registry
       uses: docker/login-action@v1
       with:
-        registry: ghcr.io/Baloise-CodeCamp-2022
+        registry: ghcr.io/baloise-codecamp-2022
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Build, Tag & Push Dockerfile
       run: |
-        docker build -t ghcr.io/Baloise-CodeCamp-2022/clojure-game-api:${{ github.sha }} .
-        docker push ghcr.io/Baloise-CodeCamp-2022/clojure-game-api:${{ github.sha }}
+        docker build -t ghcr.io/baloise-codecamp-2022/clojure-game-api:${{ github.sha }} .
+        docker push ghcr.io/baloise-codecamp-2022/clojure-game-api:${{ github.sha }}
