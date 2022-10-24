@@ -1,7 +1,8 @@
 # Codecamp Instructions
 
+- lein uberjar
 - docker build -t cc22/game-api
-- docker run -p 8080:8080 cc22/game-api
+- docker run -p 3000:3000 cc22/game-api
 - http://127.0.0.1:3000/people
 
 
