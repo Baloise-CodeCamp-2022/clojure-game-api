@@ -9,10 +9,10 @@
     (:gen-class))
 ; ------------------- TicTacToe --------------------------------
 (def tictactoe-board (atom []))
-(defn setTicValue [coordinate value]
+(defn makeMove [coordinate value]
   (swap! tictactoe-board conj {coordinate value}))
-(setTicValue :A1 true)
-(setTicValue :B2 true)
+(makeMove :A1 true)
+(makeMove :B2 true)
 (defn tictactoe-handler [req]
   {:status  200
    :headers {"Content-Type" "text/json"}
