@@ -7,7 +7,7 @@
               [clojure.string :as str]
               [clojure.data.json :as json])
     (:gen-class))
-
+; ------------------- people --------------------------------
 ; my people-collection mutable collection vector
 (def people-collection (atom []))
 
@@ -25,8 +25,21 @@
    :headers {"Content-Type" "text/json"}
    :body    (str (json/write-str @people-collection))})
 
+; ------------------- TicTacToe --------------------------------
+(def tictactoe-board (atom []))
+(defn setTicValue [coordinate value]
+  (swap! tictactoe-board conj {coordinate value}))
+(setTicValue :A1 true)
+(setTicValue :B2 true)
+(defn tictactoe-handler [req]
+  {:status  200
+   :headers {"Content-Type" "text/json"}
+   :body    (str (json/write-str @tictactoe-board))})
+
+; ------------------- App --------------------------------
 (defroutes app-routes
   (GET "/people" [] people-handler)
+  (GET "/tictactoe" [] tictactoe-handler)
   (route/not-found "Error, page not found!"))
 
 (defn -main
