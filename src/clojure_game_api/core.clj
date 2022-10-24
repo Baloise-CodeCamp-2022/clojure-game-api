@@ -10,7 +10,8 @@
 ; ------------------- TicTacToe --------------------------------
 (def tictactoe-board (atom []))
 (defn makeMove [board coordinate value]
-;  (swap! tictactoe-board conj {coordinate value}))
+  (if (= :F19 coordinate) (throw (Exception. "invalid field")) (println "OK"))
+
   (conj board {coordinate value}))
 (makeMove nil :A1 true)
 (makeMove nil :B2 true)
