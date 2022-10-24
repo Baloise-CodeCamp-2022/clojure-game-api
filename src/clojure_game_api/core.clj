@@ -17,10 +17,18 @@
 
 (def initalBoard {})
 
+(defn validateBalance [board]
+  (if (= board initalBoard)
+    true
+    (let [freq            (frequencies (vals board))
+          numberOfOFields (get freq :O 0)
+          numberOfXFields (get freq :X 0)]
+      (< (abs (- numberOfOFields numberOfXFields)) 2))))
+
 (defn validateBoard [board]
   (and (set/subset? (keys board) validCoordinates)
        (set/subset? (into #{} (vals board)) validValues)
-  ))
+       (validateBalance board)))
 
 (defn makeMove [board coordinate value]
   (if (not (contains? validCoordinates coordinate))
@@ -30,7 +38,7 @@
   (if (contains? board coordinate)
     (throw (Exception. (str "field already set" coordinate))))
   (if (not (validateBoard board))
-    (throw (Exception. "board is invalid")))
+    (throw (Exception. (str "board is invalid" board))))
 
   (conj board {coordinate value}))
 

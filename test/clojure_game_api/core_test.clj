@@ -42,3 +42,9 @@
   (testing "board has invalid value"
            (is (= false (validateBoard board)))))
 
+(deftest boardHasUnbalancedValues
+  (def board {:B2 :O :A1 :X :A2 :X :A3 :X})
+  (testing "board is valid"
+           (is (= false (validateBoard board))))
+)
+
