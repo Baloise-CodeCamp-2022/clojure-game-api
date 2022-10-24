@@ -3,6 +3,8 @@
 - docker build -tcc22/game-api
 - docker run -p 8080:8080 cc22/game-api
 
+
+
 # clojure-game-api
 
 FIXME: description
@@ -14,6 +16,12 @@ Download from http://example.com/FIXME.
 ## Usage
 
 FIXME: explanation
+
+**build**:
+
+    $ lein uberjar
+
+**run**:
 
     $ java -jar clojure-game-api-0.1.0-standalone.jar [args]
 
