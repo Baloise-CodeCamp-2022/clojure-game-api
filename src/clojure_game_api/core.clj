@@ -16,6 +16,28 @@
 
 (def initialBoard {})
 
+(defn checkForWin [board value]
+    (def stringOfFieldsWithValue (apply str (remove #{value} (sort (flatten ((group-by val board) value))))))
+    (def abcResult
+        (or (= 3 (count (re-seq #"A" stringOfFieldsWithValue)))
+            (= 3 (count (re-seq #"B" stringOfFieldsWithValue)))
+            (= 3 (count (re-seq #"C" stringOfFieldsWithValue)))
+        )
+    )
+
+    (def onetwothreeResult
+        (or (= 3 (count (re-seq #"1" stringOfFieldsWithValue)))
+            (= 3 (count (re-seq #"2" stringOfFieldsWithValue)))
+            (= 3 (count (re-seq #"3" stringOfFieldsWithValue)))
+        )
+    )
+
+    (def diagonal1 (not (nil? (re-seq #":A1.*:B2.*:C3.*" stringOfFieldsWithValue))))
+    (def diagonal2 (not (nil? (re-seq #":A3.*:B2.*:C1.*" stringOfFieldsWithValue))))
+
+    (or abcResult onetwothreeResult diagonal1 diagonal2)
+)
+
 (defn validateBoardNotFull [board]
   (< (count (keys board)) 9))
 
@@ -40,33 +62,16 @@
     (throw (Exception. (str "invalid value " value))))
   (if (contains? board coordinate)
     (throw (Exception. (str "field already set" coordinate))))
-  (if (not (validateBoard board))
-    (throw (Exception. (str "board is invalid" board))))
 
-  (conj board {coordinate value}))
+  (def newBoard (conj board {coordinate value}))
 
+  (if (not (validateBoard newBoard))
+    (throw (Exception. (str "board is invalid" newBoard))))
 
-(defn checkForWin [board value]
-    (def stringOfFieldsWithValue (apply str (remove #{value} (sort (flatten ((group-by val board) value))))))
-    (def abcResult
-        (or (= 3 (count (re-seq #"A" stringOfFieldsWithValue)))
-            (= 3 (count (re-seq #"B" stringOfFieldsWithValue)))
-            (= 3 (count (re-seq #"C" stringOfFieldsWithValue)))
-        )
-    )
-
-    (def onetwothreeResult
-        (or (= 3 (count (re-seq #"1" stringOfFieldsWithValue)))
-            (= 3 (count (re-seq #"2" stringOfFieldsWithValue)))
-            (= 3 (count (re-seq #"3" stringOfFieldsWithValue)))
-        )
-    )
-
-    (def diagonal1 (not (nil? (re-seq #":A1.*:B2.*:C3.*" stringOfFieldsWithValue))))
-    (def diagonal2 (not (nil? (re-seq #":A3.*:B2.*:C1.*" stringOfFieldsWithValue))))
-
-    (or abcResult onetwothreeResult diagonal1 diagonal2)
+   {:board newBoard :status (checkForWin newBoard value)}
 )
+
+
 
 
 ; CPU player 1 - makes a random move and returns the board
@@ -90,12 +95,12 @@
         newBoard (makeMove board
                            (keyword (get-in request [:body :move :field])),
                            (keyword (get-in request [:body :move :value])))
-        cpuBoard (cpuOpponentRandomMoves newBoard :O)
+        cpuBoard (cpuOpponentRandomMoves (newBoard :board) :O)
         ]
 
     {:status  200
      :headers {"Content-Type" "text/json"}
-     :body    (str (json/write-str cpuBoard))})
+     :body    (str (json/write-str (cpuBoard :board)))})
   )
 
 (use
