@@ -15,6 +15,10 @@
 
 (def initialBoard {})
 
+(defn validateBoardNotFull [board]
+  (< (count (keys board)) 9)
+)
+
 (defn validateBalance [board]
   (if (= board initialBoard)
     true
@@ -26,7 +30,8 @@
 (defn validateBoard [board]
   (and (set/subset? (keys board) validCoordinates)
        (set/subset? (into #{} (vals board)) validValues)
-       (validateBalance board)))
+       (validateBalance board)
+       (validateBoardNotFull board)))
 
 (defn makeMove [board coordinate value]
   (if (not (contains? validCoordinates coordinate))
@@ -44,7 +49,7 @@
 (defn cpuOpponentRandomMoves [board value]
      (def targetField (get  (into [] validCoordinates) (rand-int 9)))
      (if-not (= nil (get board targetField))
-       (cpuOppnentRandomMoves board value)
+       (cpuOpponentRandomMoves board value)
        (makeMove board targetField value)))
 
 
