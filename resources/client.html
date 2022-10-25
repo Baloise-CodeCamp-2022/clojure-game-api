@@ -1,0 +1,53 @@
+<html>
+<head>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        td {
+            width: 1em;
+            height: 1em;
+        }
+    </style>
+</head>
+<body>
+<h1 id="demo">Tic Tac Toe</h1>
+
+<table>
+    <tr>
+        <td onclick="move('A1')"></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+</table>
+
+<script>
+    function move(cell) {
+        fetch('http://localhost:3000/tictactoe/move', {
+            method: 'POST',
+            body: {
+                "board": {},
+                "move": {
+                    "field": cell,
+                    "value": "X"
+                }
+            },
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    }
+</script>
+</body>
+</html>

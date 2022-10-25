@@ -4,7 +4,8 @@
             [compojure.core :refer :all]
             [compojure.route :as route]
             [org.httpkit.server :as server]
-            [ring.middleware.defaults :refer :all])
+            [ring.middleware.defaults :refer :all]
+            [ring.util.response :as resp])
   (:gen-class))
 
 ; ------------------- TicTacToe --------------------------------
@@ -54,7 +55,7 @@
 
 (defn tictactoe-handler [req]
   {:status  200
-   :headers {"Content-Type" "text/json"}
+   :headers {"Content-Type" "text/html"}
    :body    (str (json/write-str @tictactoe-board))})
 
 (defn stringMapToKeywordMap [inMap]
@@ -81,7 +82,7 @@
 
 ; ------------------- App --------------------------------
 (defroutes app-routes
-           (GET "/tictactoe" [] tictactoe-handler)
+           (GET "/tictactoe" [] (resp/content-type (resp/resource-response "client.html") "text/html"))
            (POST "/tictactoe/move" [] handle-new-move-json)
            (route/not-found "Error, page not found!"))
 
