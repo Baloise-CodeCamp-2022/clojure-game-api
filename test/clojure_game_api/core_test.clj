@@ -1,6 +1,8 @@
 (ns clojure-game-api.core-test
   (:require [clojure.test :refer :all]
-            [clojure-game-api.core :refer :all]))
+            [clojure-game-api.core :refer :all]
+            [clojure.java.io :refer :all]
+            ))
 
 (deftest makeMove_happyFlow
   (def board {:B2 :O :A1 :X})
@@ -105,4 +107,19 @@
   (def inMap {:A1 "X" :A2 "O"})
   (testing "stringMapToKeywordMap"
            (is (= {:A1 :X :A2 :O} (stringMapToKeywordMap inMap)))))
+
+(deftest file_test
+  (let [content "{\"k1\": \"val1\"}\n"]
+    (spit "/tmp/test.json" content)
+    (testing "f1"
+      (is (= (slurp "/tmp/test.json") content ))))
+    )
+
+(deftest file2_test
+  (let [content {:A1 :X, :A2 :O}]
+    (spit "/tmp/test2.json" content)
+    (testing "f2"
+      (is (= (slurp "/tmp/test2.json") "{:A1 :X, :A2 :O}" ))))
+    )
+
 
