@@ -65,15 +65,15 @@
   (into {} (for [[k v] inMap] [k (keyword v)])))
 
 (defn handle-new-move [request]
-  (def board (stringMapToKeywordMap (get-in request [:body :board])))
-  (def newBoard
-    (makeMove board
-              (keyword (get-in request [:body :move :field])),
-              (keyword (get-in request [:body :move :value]))))
+  (let [board    (stringMapToKeywordMap (get-in request [:body :board]))
+        newBoard (makeMove board
+                           (keyword (get-in request [:body :move :field])),
+                           (keyword (get-in request [:body :move :value])))]
 
   {:status  200
    :headers {"Content-Type" "text/json"}
    :body    (str (json/write-str newBoard))})
+  )
 
 
 ; ------------------- App --------------------------------
