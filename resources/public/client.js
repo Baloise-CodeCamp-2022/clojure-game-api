@@ -40,5 +40,11 @@ function move(cell) {
                 gboard = boardAndStatus.board;
                 paintGrid(gboard);
                 document.getElementById("status").innerText = boardAndStatus.status;
+                 if (boardAndStatus.status == "WON") {
+                     alert("You win!");
+                 }
+                 if (boardAndStatus.status == "LOST") {
+                     alert("You lose!");
+                 }
             })
 }
