@@ -38,6 +38,7 @@ function move(cell) {
     resp.then(res => res.json())
             .then(boardAndStatus => {
                 gboard = boardAndStatus.board;
+                let message;
                 paintGrid(gboard);
                  if (boardAndStatus.status == "WON") {
                      message = "You win!";
