@@ -64,11 +64,13 @@
   (let [board (stringMapToKeywordMap (get-in request [:body :board]))
         newBoard (makeMove board
                            (keyword (get-in request [:body :move :field])),
-                           (keyword (get-in request [:body :move :value])))]
+                           (keyword (get-in request [:body :move :value])))
+        cpuBoard (cpuOpponentRandomMoves newBoard :O)
+        ]
 
     {:status  200
      :headers {"Content-Type" "text/json"}
-     :body    (str (json/write-str newBoard))})
+     :body    (str (json/write-str cpuBoard))})
   )
 
 (use
