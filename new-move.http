@@ -1,0 +1,13 @@
+### Send POST request with json body
+POST http://localhost:3000/tictactoe/move
+Content-Type: application/json
+
+{
+  "board": {
+    "hello": "world"
+  },
+  "move": {}
+}
+
+<> 2022-10-25T095524.200.json
+

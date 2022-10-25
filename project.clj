@@ -10,6 +10,7 @@
                  [http-kit "2.3.0"]
                  ; Ring defaults - for query params etc
                  [ring/ring-defaults "0.3.2"]
+                 [ring/ring-json "0.5.1"]
                  ; https://mvnrepository.com/artifact/ring/ring-mock
                  [ring/ring-mock "0.4.0"]
                  ; Clojure data.JSON library

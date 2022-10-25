@@ -58,16 +58,22 @@
    :headers {"Content-Type" "text/json"}
    :body    (str (json/write-str @tictactoe-board))})
 
-(defn handle-new-move [req]
+(use '[ring.middleware.json :only [wrap-json-body]]
+     '[ring.util.response :only [response]])
+
+(defn handle-new-move [request]
+  (prn request)
+  (prn (get-in request [:body :board]))
   {:status  200
    :headers {"Content-Type" "text/json"}
    :body    (str (json/write-str @tictactoe-board))})
 
 
+
 ; ------------------- App --------------------------------
 (defroutes app-routes
            (GET "/tictactoe" [] tictactoe-handler)
-           (POST "/tictactoe/move" {body :body} (handle-new-move body))
+           (POST "/tictactoe/move" [] (wrap-json-body handle-new-move {:keywords? true}))
            (route/not-found "Error, page not found!"))
 
 (defn -main
