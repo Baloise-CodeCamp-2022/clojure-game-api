@@ -17,26 +17,26 @@
 (def initialBoard {})
 
 (defn checkForWin [board value]
-    (def stringOfFieldsWithValue (apply str (remove #{value} (sort (flatten ((group-by val board) value))))))
-    (def abcResult
-        (or (= 3 (count (re-seq #"A" stringOfFieldsWithValue)))
-            (= 3 (count (re-seq #"B" stringOfFieldsWithValue)))
-            (= 3 (count (re-seq #"C" stringOfFieldsWithValue)))
+  (def stringOfFieldsWithValue (apply str (remove #{value} (sort (flatten ((group-by val board) value))))))
+  (def abcResult
+    (or (= 3 (count (re-seq #"A" stringOfFieldsWithValue)))
+        (= 3 (count (re-seq #"B" stringOfFieldsWithValue)))
+        (= 3 (count (re-seq #"C" stringOfFieldsWithValue)))
         )
     )
 
-    (def onetwothreeResult
-        (or (= 3 (count (re-seq #"1" stringOfFieldsWithValue)))
-            (= 3 (count (re-seq #"2" stringOfFieldsWithValue)))
-            (= 3 (count (re-seq #"3" stringOfFieldsWithValue)))
+  (def onetwothreeResult
+    (or (= 3 (count (re-seq #"1" stringOfFieldsWithValue)))
+        (= 3 (count (re-seq #"2" stringOfFieldsWithValue)))
+        (= 3 (count (re-seq #"3" stringOfFieldsWithValue)))
         )
     )
 
-    (def diagonal1 (not (nil? (re-seq #":A1.*:B2.*:C3.*" stringOfFieldsWithValue))))
-    (def diagonal2 (not (nil? (re-seq #":A3.*:B2.*:C1.*" stringOfFieldsWithValue))))
+  (def diagonal1 (not (nil? (re-seq #":A1.*:B2.*:C3.*" stringOfFieldsWithValue))))
+  (def diagonal2 (not (nil? (re-seq #":A3.*:B2.*:C1.*" stringOfFieldsWithValue))))
 
-    (or abcResult onetwothreeResult diagonal1 diagonal2)
-)
+  (or abcResult onetwothreeResult diagonal1 diagonal2)
+  )
 
 (defn validateBoardNotFull [board]
   (< (count (keys board)) 9))
@@ -68,18 +68,18 @@
   (if (not (validateBoard newBoard))
     (throw (Exception. (str "board is invalid" newBoard))))
 
-   {:board newBoard :status (checkForWin newBoard value)}
-)
+  {:board newBoard :status (checkForWin newBoard value)}
+  )
 
 
 
 
 ; CPU player 1 - makes a random move and returns the board
 (defn cpuOpponentRandomMoves [board value]
-     (def validMoves (set/difference validCoordinates (into #{} (keys board))))
-     (def targetField (get  (into [] validMoves) (rand-int (count validMoves))))
-     (makeMove board targetField value)
-)
+  (def validMoves (set/difference validCoordinates (into #{} (keys board))))
+  (def targetField (get (into [] validMoves) (rand-int (count validMoves))))
+  (makeMove board targetField value)
+  )
 
 
 (defn tictactoe-handler [req]
@@ -92,15 +92,17 @@
 
 (defn handle-new-move [request]
   (let [board (stringMapToKeywordMap (get-in request [:body :board]))
-        newBoard (makeMove board
-                           (keyword (get-in request [:body :move :field])),
-                           (keyword (get-in request [:body :move :value])))
-        cpuBoard (cpuOpponentRandomMoves (newBoard :board) :O)
+        afterCallerMove (makeMove board
+                                  (keyword (get-in request [:body :move :field])),
+                                  (keyword (get-in request [:body :move :value])))
+        returnBoardAndStatus (if (afterCallerMove :status)
+                               afterCallerMove
+                               (cpuOpponentRandomMoves (afterCallerMove :board) :O))
         ]
 
     {:status  200
      :headers {"Content-Type" "text/json"}
-     :body    (str (json/write-str (cpuBoard :board)))})
+     :body    (str (json/write-str returnBoardAndStatus))})
   )
 
 (use

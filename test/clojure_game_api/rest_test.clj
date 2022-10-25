@@ -1,8 +1,8 @@
 ; see https://github.com/ring-clojure/ring-mock
 (ns clojure-game-api.rest-test
   (:require [clojure-game-api.core :refer :all]
-            [clojure.test :refer :all]
             [clojure.string :as string]
+            [clojure.test :refer :all]
             [ring.mock.request :as mock]))
 
 (deftest new-move-test
@@ -14,6 +14,6 @@
           ]
       (is (= (:status response) 200))
       (is (= (get-in response [:headers "Content-Type"]) "text/json"))
-      (is (string/starts-with? (get-in response [:body]) "{\"B1\":\"X\",\"B2\":\"O\",\"A1\":\"X\""))
+      (is (string/starts-with? (get-in response [:body]) "{\"board\":{\"B1\":\"X\",\"B2\":\"O\",\"A1\":\"X\""))
       )
     ))
