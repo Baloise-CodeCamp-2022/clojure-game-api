@@ -16,13 +16,12 @@
 (def initialBoard {})
 
 (defn validateBoardNotFull [board]
-  (< (count (keys board)) 9)
-)
+  (< (count (keys board)) 9))
 
 (defn validateBalance [board]
   (if (= board initialBoard)
     true
-    (let [freq (frequencies (vals board))
+    (let [freq            (frequencies (vals board))
           numberOfOFields (get freq :O 0)
           numberOfXFields (get freq :X 0)]
       (< (abs (- numberOfOFields numberOfXFields)) 2))))
@@ -47,10 +46,10 @@
 
 ; CPU player 1 - makes a random move and returns the board
 (defn cpuOpponentRandomMoves [board value]
-     (def targetField (get  (into [] validCoordinates) (rand-int 9)))
-     (if-not (= nil (get board targetField))
-       (cpuOpponentRandomMoves board value)
-       (makeMove board targetField value)))
+  (def targetField (get (into [] validCoordinates) (rand-int 9)))
+  (if-not (= nil (get board targetField))
+    (cpuOpponentRandomMoves board value)
+    (makeMove board targetField value)))
 
 
 (defn tictactoe-handler [req]
@@ -58,23 +57,30 @@
    :headers {"Content-Type" "text/json"}
    :body    (str (json/write-str @tictactoe-board))})
 
-(use '[ring.middleware.json :only [wrap-json-body]]
-     '[ring.util.response :only [response]])
+(use
+  '[ring.middleware.json :only [wrap-json-body]]
+  '[ring.util.response :only [response]])
+
+(defn stringMapToKeywordMap [inMap]
+  (into {} (for [[k v] inMap] [k (keyword v)])))
 
 (defn handle-new-move [request]
-  (prn request)
-  (prn (get-in request [:body :board]))
+  (def board (stringMapToKeywordMap (get-in request [:body :board])))
+  (def newBoard
+    (makeMove board
+              (keyword (get-in request [:body :move :field])),
+              (keyword (get-in request [:body :move :value]))))
+
   {:status  200
    :headers {"Content-Type" "text/json"}
-   :body    (str (json/write-str @tictactoe-board))})
-
+   :body    (str (json/write-str newBoard))})
 
 
 ; ------------------- App --------------------------------
 (defroutes app-routes
-           (GET "/tictactoe" [] tictactoe-handler)
-           (POST "/tictactoe/move" [] (wrap-json-body handle-new-move {:keywords? true}))
-           (route/not-found "Error, page not found!"))
+  (GET "/tictactoe" [] tictactoe-handler)
+  (POST "/tictactoe/move" [] (wrap-json-body handle-new-move {:keywords? true}))
+  (route/not-found "Error, page not found!"))
 
 (defn -main
   "This is our main entry point"

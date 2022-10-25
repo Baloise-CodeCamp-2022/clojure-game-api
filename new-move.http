@@ -4,9 +4,13 @@ Content-Type: application/json
 
 {
   "board": {
-    "hello": "world"
+    "B1": "X",
+    "B2": "O"
   },
-  "move": {}
+  "move": {
+    "field": "A1",
+    "value": "X"
+  }
 }
 
 <> 2022-10-25T095524.200.json
