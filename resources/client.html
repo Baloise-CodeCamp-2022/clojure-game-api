@@ -1,14 +1,6 @@
 <html>
 <head>
     <style>
-        table, th, td {
-            border: 1px solid black;
-        }
-
-        td {
-            width: 1em;
-            height: 1em;
-        }
         .board {
             padding: 2px;
             display: flex;
@@ -57,7 +49,7 @@
 
     function paintGrid(board) {
 
-        function painCell(cell) {
+        function paintCell(cell) {
             function nn(val) {
                 return val ? val : "";
             }
@@ -65,15 +57,15 @@
             document.getElementById(cell).innerText = nn(board[cell]);
         }
 
-        painCell("A1");
-        painCell("A2");
-        painCell("A3");
-        painCell("B1");
-        painCell("B2");
-        painCell("B3");
-        painCell("C1");
-        painCell("C2");
-        painCell("C3");
+        paintCell("A1");
+        paintCell("A2");
+        paintCell("A3");
+        paintCell("B1");
+        paintCell("B2");
+        paintCell("B3");
+        paintCell("C1");
+        paintCell("C2");
+        paintCell("C3");
     }
 
     function move(cell) {
