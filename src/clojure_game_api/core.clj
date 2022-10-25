@@ -14,6 +14,13 @@
 (def validCoordinates #{:A1, :A2, :A3, :B1, :B2, :B3, :C1, :C2, :C3})
 (def validValues #{:X, :O})
 
+(def humanPlayer :X)
+(def cpuPlayer :O)
+
+(def GAME_IN_PROGRESS "IN PROGRESS")
+(def GAME_WON "WON")
+(def GAME_LOST "LOST")
+
 (def initialBoard {})
 
 (defn checkForWin [board value]
@@ -68,10 +75,10 @@
   (if (not (validateBoard newBoard))
     (throw (Exception. (str "board is invalid" newBoard))))
 
-  {:board newBoard :status (checkForWin newBoard value)}
+  (def someoneWon (checkForWin newBoard value))
+  (def whoWon (if someoneWon (if (= value humanPlayer) GAME_WON GAME_LOST) GAME_IN_PROGRESS))
+  {:board newBoard :status whoWon}
   )
-
-
 
 
 ; CPU player 1 - makes a random move and returns the board
@@ -95,7 +102,7 @@
         afterCallerMove (makeMove board
                                   (keyword (get-in request [:body :move :field])),
                                   (keyword (get-in request [:body :move :value])))
-        returnBoardAndStatus (if (afterCallerMove :status)
+        returnBoardAndStatus (if (or (= GAME_WON (afterCallerMove :status)) (= GAME_LOST (afterCallerMove :status)))
                                afterCallerMove
                                (cpuOpponentRandomMoves (afterCallerMove :board) :O))
         ]
