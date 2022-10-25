@@ -1,6 +1,5 @@
 (ns clojure-game-api.core-test
   (:require [clojure.test :refer :all]
-            [clojure.set :as set]
             [clojure-game-api.core :refer :all]))
 
 (deftest makeMove_happyFlow
