@@ -71,10 +71,10 @@
 
 ; CPU player 1 - makes a random move and returns the board
 (defn cpuOpponentRandomMoves [board value]
-     (def targetField (get  (into [] validCoordinates) (rand-int 9)))
-     (if-not (= nil (get board targetField))
-       (cpuOpponentRandomMoves board value)
-       (makeMove board targetField value)))
+     (def validMoves (set/difference validCoordinates (into #{} (keys board))))
+     (def targetField (get  (into [] validMoves) (rand-int (count validMoves))))
+     (makeMove board targetField value)
+)
 
 
 (defn tictactoe-handler [req]
