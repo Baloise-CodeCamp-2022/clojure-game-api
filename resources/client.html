@@ -16,37 +16,65 @@
 
 <table>
     <tr>
-        <td onclick="move('A1')"></td>
-        <td></td>
-        <td></td>
+        <td id="A1" onclick="move('A1')"></td>
+        <td id="A2" onclick="move('A2')"></td>
+        <td id="A3" onclick="move('A3')"></td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td id="B1" onclick="move('B1')"></td>
+        <td id="B2" onclick="move('B2')"></td>
+        <td id="B3" onclick="move('B3')"></td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td id="C1" onclick="move('C1')"></td>
+        <td id="C2" onclick="move('C2')"></td>
+        <td id="C3" onclick="move('C3')"></td>
     </tr>
 </table>
 
 <script>
+    var gboard = {};
+
+    function paintGrid(board) {
+
+        function painCell(cell) {
+            function nn(val) {
+                return val ? val : "";
+            }
+
+            document.getElementById(cell).innerText = nn(board[cell]);
+        }
+
+        painCell("A1");
+        painCell("A2");
+        painCell("A3");
+        painCell("B1");
+        painCell("B2");
+        painCell("B3");
+        painCell("C1");
+        painCell("C2");
+        painCell("C3");
+    }
+
     function move(cell) {
-        fetch('http://localhost:3000/tictactoe/move', {
+        const resp = fetch('http://localhost:3000/tictactoe/move', {
             method: 'POST',
-            body: {
-                "board": {},
+            body: JSON.stringify({
+                "board": gboard,
                 "move": {
                     "field": cell,
                     "value": "X"
                 }
-            },
+            }),
             headers: {
                 'Content-Type': 'application/json'
             }
         });
+        resp.then(res => res.json())
+            .then(board => {
+                gboard = board;
+                paintGrid(board);
+            })
     }
 </script>
 </body>
