@@ -4,7 +4,8 @@
             [compojure.core :refer :all]
             [compojure.route :as route]
             [org.httpkit.server :as server]
-            [ring.middleware.defaults :refer :all])
+            [ring.middleware.defaults :refer :all]
+            [ring.util.response :as resp])
   (:gen-class))
 
 ; ------------------- TicTacToe --------------------------------
@@ -16,8 +17,7 @@
 (def initialBoard {})
 
 (defn validateBoardNotFull [board]
-  (< (count (keys board)) 9)
-)
+  (< (count (keys board)) 9))
 
 (defn validateBalance [board]
   (if (= board initialBoard)
@@ -79,25 +79,35 @@
 
 (defn tictactoe-handler [req]
   {:status  200
-   :headers {"Content-Type" "text/json"}
+   :headers {"Content-Type" "text/html"}
    :body    (str (json/write-str @tictactoe-board))})
 
-(use '[ring.middleware.json :only [wrap-json-body]]
-     '[ring.util.response :only [response]])
+(defn stringMapToKeywordMap [inMap]
+  (into {} (for [[k v] inMap] [k (keyword v)])))
 
 (defn handle-new-move [request]
-  (prn request)
-  (prn (get-in request [:body :board]))
-  {:status  200
-   :headers {"Content-Type" "text/json"}
-   :body    (str (json/write-str @tictactoe-board))})
+  (let [board (stringMapToKeywordMap (get-in request [:body :board]))
+        newBoard (makeMove board
+                           (keyword (get-in request [:body :move :field])),
+                           (keyword (get-in request [:body :move :value])))
+        cpuBoard (cpuOpponentRandomMoves newBoard :O)
+        ]
 
+    {:status  200
+     :headers {"Content-Type" "text/json"}
+     :body    (str (json/write-str cpuBoard))})
+  )
+
+(use
+  '[ring.middleware.json :only [wrap-json-body]]
+  '[ring.util.response :only [response]])
+(def handle-new-move-json (wrap-json-body handle-new-move {:keywords? true}))
 
 
 ; ------------------- App --------------------------------
 (defroutes app-routes
-           (GET "/tictactoe" [] tictactoe-handler)
-           (POST "/tictactoe/move" [] (wrap-json-body handle-new-move {:keywords? true}))
+           (GET "/tictactoe" [] (resp/content-type (resp/resource-response "client.html") "text/html"))
+           (POST "/tictactoe/move" [] handle-new-move-json)
            (route/not-found "Error, page not found!"))
 
 (defn -main

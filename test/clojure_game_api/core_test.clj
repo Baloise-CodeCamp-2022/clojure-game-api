@@ -100,3 +100,9 @@
            (is (= true (checkForWin board :O)))
   )
 )
+
+(deftest stringMapToKeywordMap_test
+  (def inMap {:A1 "X" :A2 "O"})
+  (testing "stringMapToKeywordMap"
+           (is (= {:A1 :X :A2 :O} (stringMapToKeywordMap inMap)))))
+
