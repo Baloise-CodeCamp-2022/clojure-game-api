@@ -77,19 +77,27 @@
   (if (not (validateBoard newBoard))
     (throw (Exception. (str "board is invalid" newBoard))))
 
-  (def someoneWon (checkForWin newBoard value))
-  (def whoWon (if someoneWon (if (= value humanPlayer) GAME_WON GAME_LOST) GAME_IN_PROGRESS))
-  {:board newBoard :status whoWon}
+  (def gameStateUpdate
+    (if (checkForWin newBoard value)
+        (if (= value humanPlayer)
+            GAME_WON
+            GAME_LOST)
+        (if (validateBoardNotFull board)
+            GAME_IN_PROGRESS
+            GAME_DRAW
+        )
+    )
+  )
+  {:board newBoard :status gameStateUpdate}
 )
-
 
 ; CPU player 1 - makes a random move and returns the board
 (defn cpuOpponentRandomMoves [board value]
    (if (validateBoardNotFull board)
    (do
-      (def validMoves (set/difference validCoordinates (into #{} (keys board))))
-      (def targetField (get (into [] validMoves) (rand-int (count validMoves))))
-      (makeMove board targetField value)
+       (def validMoves (set/difference validCoordinates (into #{} (keys board))))
+       (def targetField (get (into [] validMoves) (rand-int (count validMoves))))
+       (makeMove board targetField value)
    )
    {:board board :status GAME_DRAW}
   )
