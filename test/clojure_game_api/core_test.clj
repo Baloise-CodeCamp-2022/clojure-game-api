@@ -6,7 +6,7 @@
   (def board {:B2 :O :A1 :X})
   (def expected {:A1 :X :B2 :O :A2 :X})
   (testing "first board test"
-    (is (= expected (makeMove board :A2, :X)))))
+    (is (= expected ((makeMove board :A2, :X) :board)))))
 
 (deftest makeMove_error_outside
   (def board {:B2 :O :A1 :X})
@@ -55,7 +55,7 @@
           (is (= true (validateBoardNotFull board)))))
 
 (deftest cpuOpponentRandomMoves_initBoard
-   (def board (cpuOpponentRandomMoves initialBoard :X))
+   (def board ((cpuOpponentRandomMoves initialBoard :X) :board))
    (testing "move has been made"
             (is (= 1 (count (keys board))))
             (is (= #{:X} (into #{} (vals board))))))
