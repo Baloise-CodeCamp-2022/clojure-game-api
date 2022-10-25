@@ -5,6 +5,8 @@
             [compojure.route :as route]
             [org.httpkit.server :as server]
             [ring.middleware.defaults :refer :all]
+            [ring.middleware.file :refer :all]
+            [ring.middleware.resource :refer :all]
             [ring.util.response :as resp])
   (:gen-class))
 
@@ -110,19 +112,32 @@
   '[ring.util.response :only [response]])
 (def handle-new-move-json (wrap-json-body handle-new-move {:keywords? true}))
 
+; ----------------------------------
+(defn handle-save [request]
+  println "save"
+  )
+
+(def handle-save-json (wrap-json-body handle-save {:keywords? true}))
+
 
 ; ------------------- App --------------------------------
 (defroutes app-routes
-           (GET "/tictactoe" [] (resp/content-type (resp/resource-response "client.html") "text/html"))
+           ;(GET "/tictactoe" [] (resp/content-type (resp/resource-response "client.html") "text/html"))
+           ;(GET "/tictactoe" [] (resp/content-type (resp/resource-response "client.html") "text/html"))
+           (GET "/tictactoe" [] (resp/redirect "client.html"))
            (POST "/tictactoe/move" [] handle-new-move-json)
+           (POST "/tictactoe/save" [] handle-save-json)
            (route/not-found "Error, page not found!"))
 
 (defn -main
   "This is our main entry point"
   [& args]
-  (let [port (Integer/parseInt (or (System/getenv "PORT") "3000"))]
+  (let [port (Integer/parseInt (or (System/getenv "PORT") "3000"))
+        routeHandler (wrap-defaults #'app-routes api-defaults)
+        ]
     ; Run the server with Ring.defaults middleware
-    (server/run-server (wrap-defaults #'app-routes api-defaults) {:port port})
+    (server/run-server (-> routeHandler
+                           (wrap-resource "public")) {:port port})
     ; Run the server without ring defaults
     ;(server/run-server #'app-routes {:port port})
     (println (str "Running webserver at http:/127.0.0.1:" port "/"))))
