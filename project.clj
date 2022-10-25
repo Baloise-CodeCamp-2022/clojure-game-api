@@ -10,6 +10,8 @@
                  [http-kit "2.3.0"]
                  ; Ring defaults - for query params etc
                  [ring/ring-defaults "0.3.2"]
+                 ; https://mvnrepository.com/artifact/ring/ring-mock
+                 [ring/ring-mock "0.4.0"]
                  ; Clojure data.JSON library
                  [org.clojure/data.json "0.2.6"]]
   :main ^:skip-aot clojure-game-api.core
