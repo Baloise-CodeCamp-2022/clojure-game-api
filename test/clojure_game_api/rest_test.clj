@@ -5,17 +5,6 @@
             [clojure.string :as string]
             [ring.mock.request :as mock]))
 
-(deftest a-test
-  (testing "first simple test"
-    (is (= 1 1))))
-
-(deftest rest-test
-  (testing "GET request to /tictactoe returns expected response"
-    (is (= (tictactoe-handler (mock/request :get "/tictactoe"))
-           {:status  200
-            :headers {"Content-Type" "text/json"}
-            :body    "[]"}))))
-
 (deftest new-move-test
   (testing "POST request to 'tictactoe/move' returns expected response"
     (let [response (handle-new-move-json
