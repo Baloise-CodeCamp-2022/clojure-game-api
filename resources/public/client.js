@@ -48,3 +48,36 @@ function move(cell) {
                  }
             })
 }
+
+function saveGame(name) {
+    const resp = fetch('/tictactoe/game', {
+        method: 'POST',
+        body: JSON.stringify({
+            "board": gboard,
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    resp.then(res => res.json())
+            .then(boardAndStatus => {
+                gboard = boardAndStatus.board;
+                paintGrid(gboard);
+                document.getElementById("status").innerText = boardAndStatus.status;
+            })
+}
+
+function loadGame(name) {
+    const resp = fetch(`/tictactoe/game/${name}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    resp.then(res => res.json())
+            .then(boardAndStatus => {
+                gboard = boardAndStatus.board;
+                paintGrid(gboard);
+                document.getElementById("status").innerText = boardAndStatus.status;
+            })
+}
