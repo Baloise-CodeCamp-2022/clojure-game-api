@@ -122,4 +122,34 @@
       (is (= (slurp "/tmp/test2.json") "{:A1 :X, :A2 :O}" ))))
     )
 
+(deftest validateProgramArguments_HappyFlow
+  (def args ["cpuOpponentRandomMoves" "human"])
+  (def expectedArgs ["cpuOpponentRandomMoves" "human"])
+  (testing "valid player names"
+    (is (= expectedArgs (validateProgramArguments args)))
+  )
+)
 
+(deftest validateProgramArguments_WrongPlayerName
+  (def args ["cpuOpponentRandomMoves2" "human"])
+  (def expectedArgs ["human" "cpuOpponentRandomMoves"])
+  (testing "wrong name corrected"
+    (is (= expectedArgs (validateProgramArguments args)))
+  )
+)
+
+(deftest validateProgramArguments_WrongNumberOfElements
+  (def args ["human"])
+  (def expectedArgs ["human" "cpuOpponentRandomMoves"])
+  (testing "missing element added"
+    (is (= expectedArgs (validateProgramArguments args)))
+  )
+)
+
+(deftest validateProgramArguments_WrongNumberOfElements_2
+  (def args [])
+  (def expectedArgs ["human" "cpuOpponentRandomMoves"])
+  (testing "missing elements added"
+    (is (= expectedArgs (validateProgramArguments args)))
+  )
+)

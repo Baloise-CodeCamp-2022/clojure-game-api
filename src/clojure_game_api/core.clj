@@ -16,13 +16,14 @@
 (def validCoordinates #{:A1, :A2, :A3, :B1, :B2, :B3, :C1, :C2, :C3})
 (def validValues #{:X, :O})
 
-(def humanPlayer :X)
-(def cpuPlayer :O)
+
 
 (def GAME_IN_PROGRESS "IN PROGRESS")
 (def GAME_WON "WON")
 (def GAME_LOST "LOST")
 (def GAME_DRAW "DRAW")
+
+(def validPlayers #{"human" "cpuOpponentRandomMoves"})
 
 (def initialBoard {})
 
@@ -79,7 +80,7 @@
 
   (def gameStateUpdate
     (if (checkForWin newBoard value)
-        (if (= value humanPlayer)
+        (if (= value :X) ; should be humanPlayer
             GAME_WON
             GAME_LOST)
         (if (validateBoardNotFull board)
@@ -119,7 +120,7 @@
                                   (keyword (get-in request [:body :move :value])))
         returnBoardAndStatus (if (or (= GAME_WON (afterCallerMove :status)) (= GAME_LOST (afterCallerMove :status)))
                                afterCallerMove
-                               (cpuOpponentRandomMoves (afterCallerMove :board) :O))
+                               (cpuOpponentRandomMoves (afterCallerMove :board) :O)) ;should be cpuPlayer
         ]
 
     {:status  200
@@ -139,6 +140,16 @@
 
 (def handle-save-json (wrap-json-body handle-save {:keywords? true}))
 
+(defn validateProgramArguments [args]
+    (def defaultProgramArguments ["human" "cpuOpponentRandomMoves"])
+    (if-not (= (count args) 2)
+        defaultProgramArguments
+        (if (not (set/subset? (into #{} args) validPlayers))
+            defaultProgramArguments
+            args
+        )
+    )
+)
 
 ; ------------------- App --------------------------------
 (defroutes app-routes
@@ -151,7 +162,19 @@
 
 (defn -main
   "This is our main entry point"
+  ; args =  ["<first player>" "<second player>"]
+  ; Can be:
+  ;  ["human" "human"] - no CPU player, only the game board will be provided by the application
+  ;  ["human" "cpuOpponentRandomMoves"] - Human player starts, the opponent is "cpuOpponentRandomMoves" (default)
+  ;  ["human" "cpuOpponentBetterMoves"] - Human player starts, the opponent is a different CPU player.
+  ;  ["cpuOpponentRandomMoves" "human"] - CPU player starts.
+  ;  ["cpuOpponentRandomMoves" "cpuOpponentBetterMoves"] - Two CPU players, no user interaction.
+  ;
+  ; valid players are provided in the set validPlayers
   [& args]
+
+  ;(def validProgramArguments (validateProgramArguments args))
+
   (let [port (Integer/parseInt (or (System/getenv "PORT") "3000"))
         routeHandler (wrap-defaults #'app-routes api-defaults)
         ]
@@ -159,5 +182,5 @@
     (server/run-server (-> routeHandler
                            (wrap-resource "public")) {:port port})
     ; Run the server without ring defaults
-    ;(server/run-server #'app-routes {:port port})
+    (server/run-server #'app-routes {:port port})
     (println (str "Running webserver at http:/127.0.0.1:" port "/"))))
