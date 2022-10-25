@@ -7,6 +7,7 @@
             [ring.middleware.defaults :refer :all]
             [ring.middleware.file :refer :all]
             [ring.middleware.resource :refer :all]
+            [clojure.java.io :refer :all]
             [ring.util.response :as resp])
   (:gen-class))
 
@@ -134,10 +135,20 @@
 
 ; ----------------------------------
 (defn handle-save [request]
-  println "save"
+  (let [
+        name (-> request :params :name)
+        board (stringMapToKeywordMap (get-in request [:body :board]))
+        result board
+        ]
+    (println name)
+    (spit (str "/tmp/" name ".json") board)
+    {:status  200
+     :headers {"Content-Type" "text/json"}
+     :body    (str (json/write-str result))})
   )
 
-(def handle-save-json (wrap-json-body handle-save {:keywords? true}))
+(defn handle-save-json [request]
+  (wrap-json-body handle-save {:keywords? true}))
 
 
 ; ------------------- App --------------------------------
@@ -146,7 +157,8 @@
            ;(GET "/tictactoe" [] (resp/content-type (resp/resource-response "client.html") "text/html"))
            (GET "/tictactoe" [] (resp/redirect "client.html"))
            (POST "/tictactoe/move" [] handle-new-move-json)
-           (POST "/tictactoe/save" [] handle-save-json)
+           (POST "/tictactoe/game/:name" [] handle-save-json)
+           (GET "/tictactoe/game/:name" [name] handle-save-json)
            (route/not-found "Error, page not found!"))
 
 (defn -main

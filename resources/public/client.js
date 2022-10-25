@@ -39,7 +39,6 @@ function move(cell) {
             .then(boardAndStatus => {
                 let message
                 gboard = boardAndStatus.board;
-                let message;
                 paintGrid(gboard);
                 if (boardAndStatus.status == "WON") {
                     message = "You win!";
@@ -54,8 +53,8 @@ function move(cell) {
             })
 }
 
-function saveGame(name) {
-    const resp = fetch('/tictactoe/game', {
+function saveGame(name = 'default') {
+    const resp = fetch(`/tictactoe/game/${name}`, {
         method: 'POST',
         body: JSON.stringify({
             "board": gboard,
