@@ -1,5 +1,6 @@
 (ns clojure-game-api.core-test
   (:require [clojure.test :refer :all]
+            [clojure.set :as set]
             [clojure-game-api.core :refer :all]))
 
 (deftest makeMove_happyFlow
@@ -45,13 +46,17 @@
 )
 
 (deftest boardIsFull
-         (def board {:A1 :X :A2 :O :A3 :X :B1 :O :B2 :X :B3 :O :C1 :X :C2 :O :C3 :X})
-         (testing "board is full"
-                  (is (= false (validateBoardNotFull board))))
-         )
+ (def board {:A1 :X :A2 :O :A3 :X :B1 :O :B2 :X :B3 :O :C1 :X :C2 :O :C3 :X})
+ (testing "board is full"
+          (is (= false (validateBoardNotFull board)))))
 
 (deftest boardIsNotFull
-         (def board {:A2 :O :A3 :X :B1 :O :B2 :X :B3 :O :C1 :X :C2 :O :C3 :X})
-         (testing "board is full"
-                  (is (= true (validateBoardNotFull board))))
-         )
+ (def board {:A2 :O :A3 :X :B1 :O :B2 :X :B3 :O :C1 :X :C2 :O :C3 :X})
+ (testing "board is full"
+          (is (= true (validateBoardNotFull board)))))
+
+(deftest cpuOpponentRandomMoves_initBoard
+   (def board (cpuOpponentRandomMoves initialBoard :X))
+   (testing "move has been made"
+            (is (= 1 (count (keys board))))
+            (is (= #{:X} (into #{} (vals board))))))
