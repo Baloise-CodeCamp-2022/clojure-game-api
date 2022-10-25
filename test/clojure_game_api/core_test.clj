@@ -15,7 +15,7 @@
 
 (deftest makeMove_error_invalid_value
   (testing "values must be :X or :O"
-           (is (thrown-with-msg? Exception #"invalid value :S" (makeMove initalBoard :A3, :S)))))
+           (is (thrown-with-msg? Exception #"invalid value :S" (makeMove initialBoard :A3, :S)))))
 
 (deftest makeMove_duplicate_value
   (def board {:B2 :O :A1 :X})
