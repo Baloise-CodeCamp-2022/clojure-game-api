@@ -21,7 +21,7 @@
 (defn validateBalance [board]
   (if (= board initialBoard)
     true
-    (let [freq            (frequencies (vals board))
+    (let [freq (frequencies (vals board))
           numberOfOFields (get freq :O 0)
           numberOfXFields (get freq :X 0)]
       (< (abs (- numberOfOFields numberOfXFields)) 2))))
@@ -57,30 +57,31 @@
    :headers {"Content-Type" "text/json"}
    :body    (str (json/write-str @tictactoe-board))})
 
-(use
-  '[ring.middleware.json :only [wrap-json-body]]
-  '[ring.util.response :only [response]])
-
 (defn stringMapToKeywordMap [inMap]
   (into {} (for [[k v] inMap] [k (keyword v)])))
 
 (defn handle-new-move [request]
-  (let [board    (stringMapToKeywordMap (get-in request [:body :board]))
+  (let [board (stringMapToKeywordMap (get-in request [:body :board]))
         newBoard (makeMove board
                            (keyword (get-in request [:body :move :field])),
                            (keyword (get-in request [:body :move :value])))]
 
-  {:status  200
-   :headers {"Content-Type" "text/json"}
-   :body    (str (json/write-str newBoard))})
+    {:status  200
+     :headers {"Content-Type" "text/json"}
+     :body    (str (json/write-str newBoard))})
   )
+
+(use
+  '[ring.middleware.json :only [wrap-json-body]]
+  '[ring.util.response :only [response]])
+(def handle-new-move-json (wrap-json-body handle-new-move {:keywords? true}))
 
 
 ; ------------------- App --------------------------------
 (defroutes app-routes
-  (GET "/tictactoe" [] tictactoe-handler)
-  (POST "/tictactoe/move" [] (wrap-json-body handle-new-move {:keywords? true}))
-  (route/not-found "Error, page not found!"))
+           (GET "/tictactoe" [] tictactoe-handler)
+           (POST "/tictactoe/move" [] handle-new-move-json)
+           (route/not-found "Error, page not found!"))
 
 (defn -main
   "This is our main entry point"

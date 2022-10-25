@@ -59,3 +59,8 @@
    (testing "move has been made"
             (is (= 1 (count (keys board))))
             (is (= #{:X} (into #{} (vals board))))))
+
+(deftest stringMapToKeywordMap_test
+  (def inMap {:A1 "X" :A2 "O"})
+  (testing "stringMapToKeywordMap"
+           (is (= {:A1 :X :A2 :O} (stringMapToKeywordMap inMap)))))
