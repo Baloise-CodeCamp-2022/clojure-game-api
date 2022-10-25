@@ -37,14 +37,18 @@ function move(cell) {
     });
     resp.then(res => res.json())
             .then(boardAndStatus => {
+                let message
                 gboard = boardAndStatus.board;
                 paintGrid(gboard);
-                 if (boardAndStatus.status == "WON") {
-                     message = "You win!";
-                 }
-                 if (boardAndStatus.status == "LOST") {
-                     message = "You lose!";
-                 }
+                if (boardAndStatus.status == "WON") {
+                    message = "You win!";
+                }
+                if (boardAndStatus.status == "LOST") {
+                    message = "You lose!";
+                }
+                if (boardAndStatus.status == "DRAW") {
+                   message = "Draw!";
+                }
                 document.getElementById("status").innerText = message;
             })
 }

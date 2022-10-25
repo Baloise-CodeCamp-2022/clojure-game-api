@@ -22,6 +22,7 @@
 (def GAME_IN_PROGRESS "IN PROGRESS")
 (def GAME_WON "WON")
 (def GAME_LOST "LOST")
+(def GAME_DRAW "DRAW")
 
 (def initialBoard {})
 
@@ -61,8 +62,7 @@
 (defn validateBoard [board]
   (and (set/subset? (keys board) validCoordinates)
        (set/subset? (into #{} (vals board)) validValues)
-       (validateBalance board)
-       (validateBoardNotFull board)))
+       (validateBalance board)))
 
 (defn makeMove [board coordinate value]
   (if (not (contains? validCoordinates coordinate))
@@ -80,15 +80,20 @@
   (def someoneWon (checkForWin newBoard value))
   (def whoWon (if someoneWon (if (= value humanPlayer) GAME_WON GAME_LOST) GAME_IN_PROGRESS))
   {:board newBoard :status whoWon}
-  )
+)
 
 
 ; CPU player 1 - makes a random move and returns the board
 (defn cpuOpponentRandomMoves [board value]
-  (def validMoves (set/difference validCoordinates (into #{} (keys board))))
-  (def targetField (get (into [] validMoves) (rand-int (count validMoves))))
-  (makeMove board targetField value)
+   (if (validateBoardNotFull board)
+   (do
+      (def validMoves (set/difference validCoordinates (into #{} (keys board))))
+      (def targetField (get (into [] validMoves) (rand-int (count validMoves))))
+      (makeMove board targetField value)
+   )
+   {:board board :status GAME_DRAW}
   )
+)
 
 
 (defn tictactoe-handler [req]
