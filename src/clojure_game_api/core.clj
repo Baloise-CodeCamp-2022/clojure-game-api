@@ -15,10 +15,10 @@
 (def validCoordinates #{:A1, :A2, :A3, :B1, :B2, :B3, :C1, :C2, :C3})
 (def validValues #{:X, :O})
 
-(def initalBoard {})
+(def initialBoard {})
 
 (defn validateBalance [board]
-  (if (= board initalBoard)
+  (if (= board initialBoard)
     true
     (let [freq            (frequencies (vals board))
           numberOfOFields (get freq :O 0)
@@ -42,8 +42,13 @@
 
   (conj board {coordinate value}))
 
-(makeMove nil :A1 :X)
-(makeMove nil :B2 :O)
+; CPU player 1 - makes a random move and returns the board
+(defn cpuOpponentRandomMoves [board value]
+     (def targetField (get  (into [] validCoordinates) (rand-int 9)))
+     (if-not (= nil (get board targetField))
+       (cpuOppnentRandomMoves board value)
+       (makeMove board targetField value)))
+
 
 (defn tictactoe-handler [req]
   {:status  200
