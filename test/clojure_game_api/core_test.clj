@@ -2,10 +2,6 @@
   (:require [clojure.test :refer :all]
             [clojure-game-api.core :refer :all]))
 
-(deftest a-test
-  (testing "first simple test"
-    (is (= 1 1))))
-
 (deftest makeMove_happyFlow
   (def board {:B2 :O :A1 :X})
   (def expected {:A1 :X :B2 :O :A2 :X})
