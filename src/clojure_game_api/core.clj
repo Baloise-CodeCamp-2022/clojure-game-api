@@ -45,6 +45,30 @@
 
   (conj board {coordinate value}))
 
+
+(defn checkForWin [board value]
+    (def stringOfFieldsWithValue (apply str (remove #{value} (sort (flatten ((group-by val board) value))))))
+    (def abcResult
+        (or (= 3 (count (re-seq #"A" stringOfFieldsWithValue)))
+            (= 3 (count (re-seq #"B" stringOfFieldsWithValue)))
+            (= 3 (count (re-seq #"C" stringOfFieldsWithValue)))
+        )
+    )
+
+    (def onetwothreeResult
+        (or (= 3 (count (re-seq #"1" stringOfFieldsWithValue)))
+            (= 3 (count (re-seq #"2" stringOfFieldsWithValue)))
+            (= 3 (count (re-seq #"3" stringOfFieldsWithValue)))
+        )
+    )
+
+    (def diagonal1 (not (nil? (re-seq #":A1.*:B2.*:C3.*" stringOfFieldsWithValue))))
+    (def diagonal2 (not (nil? (re-seq #":A3.*:B2.*:C1.*" stringOfFieldsWithValue))))
+
+    (or abcResult onetwothreeResult diagonal1 diagonal2)
+)
+
+
 ; CPU player 1 - makes a random move and returns the board
 (defn cpuOpponentRandomMoves [board value]
      (def targetField (get  (into [] validCoordinates) (rand-int 9)))
