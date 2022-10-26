@@ -12,7 +12,7 @@
   (:gen-class))
 
 ; ------------------- TicTacToe --------------------------------
-(def tictactoe-board (atom []))
+(def boardRepository (atom {}))
 
 (def validCoordinates #{:A1, :A2, :A3, :B1, :B2, :B3, :C1, :C2, :C3})
 (def validValues #{:X, :O})
@@ -104,11 +104,11 @@
   )
 )
 
+(defn saveBoard [boardName board]
+  (swap! boardRepository assoc (keyword boardName) board))
 
-(defn tictactoe-handler [req]
-  {:status  200
-   :headers {"Content-Type" "text/html"}
-   :body    (str (json/write-str @tictactoe-board))})
+(defn loadBoard [boardName]
+  (get boardRepository (keyword boardName)))
 
 (defn stringMapToKeywordMap [inMap]
   (into {} (for [[k v] inMap] [k (keyword v)])))
@@ -140,8 +140,10 @@
         board (stringMapToKeywordMap (get-in request [:body :board]))
         result board
         ]
-    (println name)
-    (spit (str "/tmp/" name ".json") board)
+    (saveBoard name board)
+    (println boardRepository)
+    ; save to file
+    ;(spit (str "/tmp/" name ".json") board)
     {:status  200
      :headers {"Content-Type" "text/json"}
      :body    (str (json/write-str result))})

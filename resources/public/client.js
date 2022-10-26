@@ -53,8 +53,9 @@ function move(cell) {
             })
 }
 
-function saveGame(name = 'default') {
-    const resp = fetch(`/tictactoe/game/${name}`, {
+function saveGame() {
+    const gameName = document.getElementById("gamename").value
+    const resp = fetch(`/tictactoe/game/${gameName}`, {
         method: 'POST',
         body: JSON.stringify({
             "board": gboard,
@@ -72,7 +73,8 @@ function saveGame(name = 'default') {
 }
 
 function loadGame(name) {
-    const resp = fetch(`/tictactoe/game/${name}`, {
+    const gameName = document.getElementById("gamename").value
+    const resp = fetch(`/tictactoe/game/${gameName}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
