@@ -18,7 +18,7 @@
                                   (keyword (get-in request [:body :move :value])))
         returnBoardAndStatus (if (or (= GAME_WON (afterCallerMove :status)) (= GAME_LOST (afterCallerMove :status)))
                                afterCallerMove
-                               (cpuOpponentRandomMoves (afterCallerMove :board) :O))
+                               (cpuOpponent2 (afterCallerMove :board) :O))
         ]
 
     {:status  200
