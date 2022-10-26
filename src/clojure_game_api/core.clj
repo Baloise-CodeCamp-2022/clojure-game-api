@@ -80,15 +80,12 @@
 
 ; CPU player 1 - makes a random move and returns the board
 (defn cpuOpponentRandomMoves [board value]
-   (if (validateBoardNotFull board)
-   (do
-       (def validMoves (set/difference validCoordinates (into #{} (keys board))))
-       (def targetField (get (into [] validMoves) (rand-int (count validMoves))))
-       (makeMove board targetField value)
-   )
-   {:board board :status GAME_DRAW}
-  )
-)
+  (if (validateBoardNotFull board)
+    (let [validMoves (set/difference validCoordinates (into #{} (keys board)))
+          targetField (get (into [] validMoves) (rand-int (count validMoves)))]
+      (makeMove board targetField value))
+    {:board board :status GAME_DRAW}
+    ))
 
 ; CPU player 2 - a bit more strategy
 ; Get all fields of the given field in its row
