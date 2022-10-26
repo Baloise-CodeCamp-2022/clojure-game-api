@@ -108,7 +108,7 @@
   (swap! boardRepository assoc (keyword boardName) board))
 
 (defn loadBoard [boardName]
-  (get boardRepository (keyword boardName)))
+  (get @boardRepository (keyword boardName) ))
 
 (defn stringMapToKeywordMap [inMap]
   (into {} (for [[k v] inMap] [k (keyword v)])))
@@ -135,14 +135,17 @@
 
 ; ----------------------------------
 (defn handle-save [request]
+  (println "SAVE:")
   (let [
         name (-> request :params :name)
         board (stringMapToKeywordMap (get-in request [:body :board]))
         result board
         ]
+    (println name)
     (saveBoard name board)
     (println boardRepository)
-    ; save to file
+    (println (loadBoard name))
+    ; save to file:
     ;(spit (str "/tmp/" name ".json") board)
     {:status  200
      :headers {"Content-Type" "text/json"}
@@ -152,6 +155,25 @@
 (defn handle-save-json [request]
   (wrap-json-body handle-save {:keywords? true}))
 
+(defn handle-load [request]
+  (println "LOAD:")
+  (let [
+        name (-> request :params :name)
+        board (loadBoard name)
+        result {:board board :status GAME_IN_PROGRESS}
+        ]
+    (println name)
+    (println result)
+    ; save to file:
+    ;(spit (str "/tmp/" name ".json") board)
+    {:status  200
+     :headers {"Content-Type" "text/json"}
+     :body    (str (json/write-str result))})
+  )
+
+(defn handle-load-json [request]
+  (wrap-json-body handle-load {:keywords? true}))
+
 
 ; ------------------- App --------------------------------
 (defroutes app-routes
@@ -160,7 +182,7 @@
            (GET "/tictactoe" [] (resp/redirect "client.html"))
            (POST "/tictactoe/move" [] handle-new-move-json)
            (POST "/tictactoe/game/:name" [] handle-save-json)
-           (GET "/tictactoe/game/:name" [name] handle-save-json)
+           (GET "/tictactoe/game/:name" [] handle-load-json)
            (route/not-found "Error, page not found!"))
 
 (defn -main
