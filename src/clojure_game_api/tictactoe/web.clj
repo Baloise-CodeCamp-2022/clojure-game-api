@@ -75,10 +75,12 @@
       (resp/content-type (resp/resource-response "client.html" {:root "public"}) "text/html"))
 
 ; ------------------- App --------------------------------
-(defroutes app-routes
-           (GET "/tictactoe" [] handle-get-tictactoe)
-           (POST "/tictactoe/move" [] handle-new-move-json)
-           (POST "/tictactoe/game/:name" [] handle-save-json)
-           (GET "/tictactoe/game/:name" [] handle-load-json)
-           (route/not-found "Error, page not found!"))
+(def ttt-handlers '(
+  (GET "/tictactoe" [] handle-get-tictactoe)
+  (POST "/tictactoe/move" [] handle-new-move-json)
+  (POST "/tictactoe/game/:name" [] handle-save-json)
+  (GET "/tictactoe/game/:name" [] handle-load-json)
+  (route/not-found "Error, page not found!")))
+
+;(defroutes app-routes ttt-handlers)
 
