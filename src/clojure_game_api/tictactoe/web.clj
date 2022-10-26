@@ -13,19 +13,19 @@
 
 
 (defn handle-new-move [request]
-  (let [board (stringMapToKeywordMap (get-in request [:body :board]))
-        afterCallerMove (makeMove board
-                                  (keyword (get-in request [:body :move :field])),
-                                  (keyword (get-in request [:body :move :value])))
-        returnBoardAndStatus (if (or (= GAME_WON (afterCallerMove :status)) (= GAME_LOST (afterCallerMove :status)))
-                               afterCallerMove
-                               (cpuOpponent2 (afterCallerMove :board) :O))
-        ]
-
-    {:status  200
-     :headers {"Content-Type" "text/json"}
-     :body    (str (json/write-str returnBoardAndStatus))})
-  )
+  (if (= @GAME_STATE [GAME_IN_PROGRESS])
+    (let [board (stringMapToKeywordMap (get-in request [:body :board]))
+          afterCallerMove (makeMove board
+                                    (keyword (get-in request [:body :move :field])),
+                                    (keyword (get-in request [:body :move :value])))
+          returnBoardAndStatus (if (or (= GAME_WON (afterCallerMove :status)) (= GAME_LOST (afterCallerMove :status)))
+                                  afterCallerMove
+                                 (cpuOpponentRandomMoves (afterCallerMove :board) :O))
+          ]
+      {:status  200
+       :headers {"Content-Type" "text/json"}
+       :body    (str (json/write-str returnBoardAndStatus))}
+    )))
 
 (use
   '[ring.middleware.json :only [wrap-json-body]]
@@ -70,9 +70,13 @@
 (defn handle-load-json [request]
   (wrap-json-body handle-load {:keywords? true}))
 
+(defn handle-get-tictactoe [request]
+      (reset! GAME_STATE [GAME_IN_PROGRESS])
+      (resp/content-type (resp/resource-response "client.html" {:root "public"}) "text/html"))
+
 ; ------------------- App --------------------------------
 (defroutes app-routes
-           (GET "/tictactoe" [] (resp/redirect "tictactoe/client.html"))
+           (GET "/tictactoe" [] handle-get-tictactoe)
            (POST "/tictactoe/move" [] handle-new-move-json)
            (POST "/tictactoe/game/:name" [] handle-save-json)
            (GET "/tictactoe/game/:name" [] handle-load-json)

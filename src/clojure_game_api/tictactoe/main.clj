@@ -41,7 +41,6 @@
   ; valid players are provided in the set validPlayers
   [& args]
 
-
   ;(def validProgramArguments (validateProgramArguments args))
   )
 

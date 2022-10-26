@@ -16,6 +16,8 @@
 (def GAME_LOST "LOST")
 (def GAME_DRAW "DRAW")
 
+(def GAME_STATE (atom [GAME_IN_PROGRESS]))
+
 (def validPlayers #{"human" "cpuOpponentRandomMoves"})
 
 (def initialBoard {})
@@ -73,6 +75,7 @@
               GAME_DRAW
               )
             )]
+      (reset! GAME_STATE [gameStateUpdate])
       {:board newBoard :status gameStateUpdate}
       )))
 
