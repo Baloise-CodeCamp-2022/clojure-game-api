@@ -3,14 +3,32 @@
 (def emptyBoard
   (vec (repeat 9 (vec (repeat 9 0)))))
 
+(def error
+  {:error true})
+
 (defn validateBoard [board]
   (let [erroneousNumbers (filter #(or (> % 9) (< % 0)) (flatten board))]
     (if (not (empty? erroneousNumbers))
-      {:error true}
+      error
     )))
 
+(defn validateSetNumber [board x y n]
+   (if (or (> x 9) (< x 0))
+     error
+     (if (or (> y 9) (< y 0))
+       error
+       (if (or (> n 9) (< n 1))
+       error
+       (validateBoard board)
+       )
+     )))
+
+
 (defn setNumber [board x y n]
-  (assoc board y (assoc (get board y) x n)))
+     (let [ validationCheck (validateSetNumber board x y n)]
+        (if (= nil validationCheck)
+          (assoc board y (assoc (get board y) x n))
+          validationCheck)))
 
 (def easy
   [

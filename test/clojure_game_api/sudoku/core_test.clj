@@ -42,7 +42,7 @@
                      [0 0 0 0 0 0 0 0 0]
                      [0 4 0 0 0 0 0 0 0]
                      [0 0 0 0 0 0 0 0 0]])
-         (testing "validating a valid board"
+         (testing "validating an invalid board"
                   (is (= expected (validateBoard board)))))
 
 (deftest validateBoard_error_NumberTooSmall
@@ -56,5 +56,21 @@
                      [0 0 0 0 0 0 0 0 0]
                      [0 4 0 0 0 0 0 0 0]
                      [0 0 0 0 0 0 0 0 0]])
-         (testing "validating a valid board"
+         (testing "validating an invalid board"
                   (is (= expected (validateBoard board)))))
+
+(deftest validatesSetNumber_HappyFlow
+         (testing "validating a valid setNumber execution"
+                  (is (= nil (validateSetNumber emptyBoard 0 0 1)))))
+
+(deftest validatesSetNumber_WrongXCoordinate
+         (testing "validating an invalid setNumber execution/x not in range"
+                  (is (= error (validateSetNumber emptyBoard 40 0 1)))))
+
+(deftest validatesSetNumber_WrongYCoordinate
+         (testing "validating an invalid setNumber execution/y not in range"
+                  (is (= error (validateSetNumber emptyBoard 0 -34 1)))))
+
+(deftest validatesSetNumber_WrongNumber
+         (testing "validating an invalid setNumber execution/n not in range"
+                  (is (= error (validateSetNumber emptyBoard 0 0 98)))))
