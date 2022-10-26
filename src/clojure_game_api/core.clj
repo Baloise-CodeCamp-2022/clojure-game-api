@@ -61,24 +61,22 @@
   (if (contains? board coordinate)
     (throw (Exception. (str "field already set" coordinate))))
 
-  (def newBoard (conj board {coordinate value}))
+  (let [newBoard (conj board {coordinate value})]
+    (if (not (validateBoard newBoard))
+      (throw (Exception. (str "board is invalid" newBoard))))
 
-  (if (not (validateBoard newBoard))
-    (throw (Exception. (str "board is invalid" newBoard))))
-
-  (def gameStateUpdate
-    (if (checkForWin newBoard value)
-        (if (= value :X) ; should be humanPlayer
-            GAME_WON
-            GAME_LOST)
-        (if (validateBoardNotFull board)
-            GAME_IN_PROGRESS
-            GAME_DRAW
-        )
-    )
-  )
-  {:board newBoard :status gameStateUpdate}
-)
+    (let [gameStateUpdate
+          (if (checkForWin newBoard value)
+            (if (= value :X)                                ; should be humanPlayer
+              GAME_WON
+              GAME_LOST)
+            (if (validateBoardNotFull board)
+              GAME_IN_PROGRESS
+              GAME_DRAW
+              )
+            )]
+      {:board newBoard :status gameStateUpdate}
+      )))
 
 ; CPU player 1 - makes a random move and returns the board
 (defn cpuOpponentRandomMoves [board value]
@@ -132,7 +130,7 @@
   (swap! boardRepository assoc (keyword boardName) board))
 
 (defn loadBoard [boardName]
-  (get @boardRepository (keyword boardName) ))
+  (get @boardRepository (keyword boardName)))
 
 (defn stringMapToKeywordMap [inMap]
   (into {} (for [[k v] inMap] [k (keyword v)])))
