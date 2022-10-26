@@ -1,4 +1,4 @@
-(ns clojure-game-api.core-test
+(ns clojure-game-api.tictactoe.core-test
   (:require [clojure.test :refer :all]
             [clojure-game-api.tictactoe.core :refer :all]
             [clojure-game-api.tictactoe.main :refer :all]

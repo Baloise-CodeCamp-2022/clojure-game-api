@@ -1,5 +1,5 @@
 ; see https://github.com/ring-clojure/ring-mock
-(ns clojure-game-api.rest-test
+(ns clojure-game-api.tictactoe.rest-test
   (:require [clojure-game-api.tictactoe.core :refer :all]
             [clojure.string :as string]
             [clojure.test :refer :all]
