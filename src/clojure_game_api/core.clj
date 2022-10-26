@@ -7,9 +7,15 @@
             [ring.middleware.resource :refer :all])
   (:gen-class))
 
-; ------------------- TicTacToe --------------------------------
-(def boardRepository (atom {}))
+; ------------------- dependency injection --------------------------------
+(def di-context (atom {}))
+(defn di-put [key value]
+  (swap! di-context assoc (keyword key) value))
 
+(defn di-get [key]
+  (get @di-context (keyword key) ))
+
+; ------------------- TicTacToe --------------------------------
 (def validCoordinates #{:A1, :A2, :A3, :B1, :B2, :B3, :C1, :C2, :C3})
 (def validValues #{:X, :O})
 
@@ -120,14 +126,6 @@
         targetField (first (last (sort-by second movesWithWeight)))]
     (makeMove board targetField player)
     ))
-
-
-
-(defn saveBoard [boardName board]
-  (swap! boardRepository assoc (keyword boardName) board))
-
-(defn loadBoard [boardName]
-  (get @boardRepository (keyword boardName)))
 
 (defn stringMapToKeywordMap [inMap]
   (into {} (for [[k v] inMap] [k (keyword v)])))
