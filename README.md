@@ -6,6 +6,30 @@
 - http://127.0.0.1:3000/people
 
 
+# Comparing strategies
+
+Use this to simulate a game of one strategy vs another:
+```clojure
+(defn trial [p1 v1 p2 v2 board]
+  (let [newBoardWithStatus (apply p1 board v1 '())]
+    ; (prn newBoardWithStatus)
+    (if (= GAME_IN_PROGRESS (newBoardWithStatus :status))
+      (trial p2 v2 p1 v1 (newBoardWithStatus :board))
+      (newBoardWithStatus :status)
+      )))
+```
+Call it like this:
+```clojure
+(trial cpuOpponent2 :X cpuOpponentRandomMoves :O {})
+```
+To simulate a lot of games and count results do this:
+```clojure
+(sort 
+  (frequencies 
+    (take 1000 (repeatedly #(trial cpuOpponent2 :X cpuOpponentRandomMoves :O {})))))
+=> (["DRAW" 171] ["LOST" 24] ["WON" 805])
+```
+
 
 # clojure-game-api
 
