@@ -1,9 +1,10 @@
-(ns clojure-game-api.main
+(ns clojure-game-api.tictactoe.main
   (:require [clojure.java.io :refer :all]
             [clojure.set :as set]
-            [clojure-game-api.core :refer :all]
-            [clojure-game-api.web :refer :all]
-            [clojure-game-api.persistence.memory :refer :all]
+            [clojure-game-api.main.maincore :refer :all]
+            [clojure-game-api.tictactoe.core :refer :all]
+            [clojure-game-api.tictactoe.web :refer :all]
+            [clojure-game-api.tictactoe.persistence.memory :refer :all]
             [compojure.core :refer :all]
             [ring.middleware.defaults :refer :all]
             [ring.middleware.file :refer :all]
@@ -21,7 +22,13 @@
     )
 )
 
-(defn -main
+(def tictactoe-di-context {
+                         :save #'saveBoard
+                         :load #'loadBoard
+                         }
+  )
+
+(defn tictactoe
   "This is our main entry point"
   ; args =  ["<first player>" "<second player>"]
   ; Can be:
@@ -35,10 +42,6 @@
   [& args]
 
 
-  (def validProgramArguments (validateProgramArguments args))
-  (reset! di-context {
-                      :save #'saveBoard
-                      :load #'loadBoard
-    })
-  (start-web-server)
+  ;(def validProgramArguments (validateProgramArguments args))
   )
+

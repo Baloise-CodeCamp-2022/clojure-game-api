@@ -1,7 +1,7 @@
-(ns clojure-game-api.persistence.memory
+(ns clojure-game-api.tictactoe.persistence.memory
   (:require [clojure.java.io :refer :all]
-            [clojure-game-api.core :refer :all]
-            [clojure-game-api.web :refer :all]
+            [clojure-game-api.tictactoe.core :refer :all]
+            [clojure-game-api.tictactoe.web :refer :all]
             [compojure.core :refer :all]
             [ring.middleware.defaults :refer :all]
             [ring.middleware.file :refer :all]

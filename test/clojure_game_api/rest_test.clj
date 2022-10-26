@@ -1,9 +1,9 @@
 ; see https://github.com/ring-clojure/ring-mock
 (ns clojure-game-api.rest-test
-  (:require [clojure-game-api.core :refer :all]
+  (:require [clojure-game-api.tictactoe.core :refer :all]
             [clojure.string :as string]
             [clojure.test :refer :all]
-            [clojure-game-api.web :refer :all]
+            [clojure-game-api.tictactoe.web :refer :all]
             [ring.mock.request :as mock]))
 
 (deftest new-move-test

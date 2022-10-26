@@ -1,10 +1,10 @@
-(ns clojure-game-api.web
-  (:require [clojure-game-api.core :refer :all]
+(ns clojure-game-api.tictactoe.web
+  (:require [clojure-game-api.tictactoe.core :refer :all]
+            [clojure-game-api.main.maincore :refer :all]
             [clojure.data.json :as json]
             [clojure.java.io :refer :all]
             [compojure.core :refer :all]
             [compojure.route :as route]
-            [org.httpkit.server :as server]
             [ring.middleware.defaults :refer :all]
             [ring.middleware.file :refer :all]
             [ring.middleware.resource :refer :all]
@@ -35,6 +35,7 @@
 ; ----------------------------------
 (defn handle-save [request]
   (println "SAVE:")
+  (println (di-get :save))
   (let [
         save-fn (di-get :save)
         name (-> request :params :name)
@@ -71,20 +72,9 @@
 
 ; ------------------- App --------------------------------
 (defroutes app-routes
-           (GET "/tictactoe" [] (resp/redirect "client.html"))
+           (GET "/tictactoe" [] (resp/redirect "tictactoe/client.html"))
            (POST "/tictactoe/move" [] handle-new-move-json)
            (POST "/tictactoe/game/:name" [] handle-save-json)
            (GET "/tictactoe/game/:name" [] handle-load-json)
            (route/not-found "Error, page not found!"))
 
-(defn start-web-server []
-  (let [port (Integer/parseInt (or (System/getenv "PORT") "3000"))
-        routeHandler (wrap-defaults #'app-routes api-defaults)
-        ]
-    ; Run the server with Ring.defaults middleware
-    (server/run-server (-> routeHandler
-                           (wrap-resource "public")) {:port port})
-    ; Run the server without ring defaults
-    ;(server/run-server #'app-routes {:port port})
-    (println (str "Running webserver at http:/127.0.0.1:" port "/")))
-  )
