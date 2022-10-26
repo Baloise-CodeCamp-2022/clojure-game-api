@@ -3,6 +3,20 @@
 (def emptyBoard
   (vec (repeat 9 (vec (repeat 9 0)))))
 
+(def easyBoard
+  [
+   [0 6 0 3 0 0 8 0 4]
+   [5 3 7 0 9 0 0 0 0]
+   [0 4 0 0 0 6 3 0 7]
+   [0 9 0 0 5 1 2 3 8]
+   [0 0 0 0 0 0 0 0 0]
+   [7 1 3 6 2 0 0 4 0]
+   [3 0 6 4 0 0 0 1 0]
+   [0 0 0 0 6 0 5 2 3]
+   [1 0 2 0 0 9 0 8 0]
+   ]
+  )
+
 (def error
   {:error true})
 
@@ -30,16 +44,11 @@
           (assoc board y (assoc (get board y) x n))
           validationCheck)))
 
-(def easy
-  [
-   [0 6 0 3 0 0 8 0 4]
-   [5 3 7 0 9 0 0 0 0]
-   [0 4 0 0 0 6 3 0 7]
-   [0 9 0 0 5 1 2 3 8]
-   [0 0 0 0 0 0 0 0 0]
-   [7 1 3 6 2 0 0 4 0]
-   [3 0 6 4 0 0 0 1 0]
-   [0 0 0 0 6 0 5 2 3]
-   [1 0 2 0 0 9 0 8 0]
-   ]
-  )
+(defn getNumber [board x y]
+  (get (get board y) x))
+
+
+(defn sCol [board x]
+  (map (fn [y] (get (get board y) x)) (range 9)))
+(defn sRow [board y]
+  (get board y))
