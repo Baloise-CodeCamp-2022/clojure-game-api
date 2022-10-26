@@ -15,7 +15,7 @@
                  [ring/ring-mock "0.4.0"]
                  ; Clojure data.JSON library
                  [org.clojure/data.json "0.2.6"]]
-  :main ^:skip-aot clojure-game-api.main
+  :main ^:skip-aot clojure-game-api.main.main
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all
                        :jvm-opts ["-Dclojure.compiler.direct-linking=true"]}})

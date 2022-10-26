@@ -1,7 +1,7 @@
 (ns clojure-game-api.core-test
   (:require [clojure.test :refer :all]
-            [clojure-game-api.core :refer :all]
-            [clojure-game-api.main :refer :all]
+            [clojure-game-api.tictactoe.core :refer :all]
+            [clojure-game-api.tictactoe.main :refer :all]
             [clojure.java.io :refer :all]
             ))
 
