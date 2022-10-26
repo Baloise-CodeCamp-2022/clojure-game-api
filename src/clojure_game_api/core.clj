@@ -11,8 +11,6 @@
   (:gen-class))
 
 ; ------------------- TicTacToe --------------------------------
-(def tictactoe-board (atom []))
-
 (def validCoordinates #{:A1, :A2, :A3, :B1, :B2, :B3, :C1, :C2, :C3})
 (def validValues #{:X, :O})
 
@@ -105,11 +103,6 @@
 )
 
 
-(defn tictactoe-handler [req]
-  {:status  200
-   :headers {"Content-Type" "text/html"}
-   :body    (str (json/write-str @tictactoe-board))})
-
 (defn stringMapToKeywordMap [inMap]
   (into {} (for [[k v] inMap] [k (keyword v)])))
 
@@ -118,7 +111,7 @@
         afterCallerMove (makeMove board
                                   (keyword (get-in request [:body :move :field])),
                                   (keyword (get-in request [:body :move :value])))
-        returnBoardAndStatus (if (or (= GAME_WON (afterCallerMove :status)) (= GAME_LOST (afterCallerMove :status)))
+        returnBoardAndStatus (if (or (= GAME_WON (afterCallerMove :status)) (= GAME_LOST (afterCallerMove :status)) (= GAME_DRAW (afterCallerMove :status)))
                                afterCallerMove
                                (cpuOpponentRandomMoves (afterCallerMove :board) :O)) ;should be cpuPlayer
         ]
@@ -160,6 +153,7 @@
            (POST "/tictactoe/save" [] handle-save-json)
            (route/not-found "Error, page not found!"))
 
+
 (defn -main
   "This is our main entry point"
   ; args =  ["<first player>" "<second player>"]
@@ -173,7 +167,8 @@
   ; valid players are provided in the set validPlayers
   [& args]
 
-  ;(def validProgramArguments (validateProgramArguments args))
+
+  (def validProgramArguments (validateProgramArguments args))
 
   (let [port (Integer/parseInt (or (System/getenv "PORT") "3000"))
         routeHandler (wrap-defaults #'app-routes api-defaults)
@@ -182,5 +177,5 @@
     (server/run-server (-> routeHandler
                            (wrap-resource "public")) {:port port})
     ; Run the server without ring defaults
-    (server/run-server #'app-routes {:port port})
+    ;(server/run-server #'app-routes {:port port})
     (println (str "Running webserver at http:/127.0.0.1:" port "/"))))
