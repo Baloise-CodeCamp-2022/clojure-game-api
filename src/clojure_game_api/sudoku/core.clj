@@ -7,7 +7,7 @@
   (let [erroneousNumbers (filter #(or (> % 9) (< % 0)) (flatten board))]
     (if (not (empty? erroneousNumbers))
       {:error true}
-    )))
+      )))
 
 (defn setNumber [board x y n]
   (assoc board y (assoc (get board y) x n)))
@@ -25,3 +25,8 @@
    [1 0 2 0 0 9 0 8 0]
    ]
   )
+
+(defn sCol [board x]
+  (map (fn [y] (get (get board y) x)) (range 9)))
+(defn sRow [board y]
+  (get board y))
