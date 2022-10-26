@@ -63,6 +63,15 @@
             (is (= 1 (count (keys board))))
             (is (= #{:X} (into #{} (vals board))))))
 
+(deftest cpuOponent2_prohibitsWinner
+  (def board {:A1 :X :A2 :X, :B1 :O})
+  (testing "Oponent prohibits the other guy to win - has to put :O on A3"
+    (let [res (cpuOpponent2 board :O)]
+      (is (= ((res :board) :A3)) :O)
+      )
+    )
+  )
+
 (deftest checkForWin_initialBoard
   (testing "board is empty, no one won"
            (is (= false (checkForWin initialBoard :X) ))

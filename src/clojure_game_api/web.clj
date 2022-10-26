@@ -4,6 +4,7 @@
             [clojure.java.io :refer :all]
             [compojure.core :refer :all]
             [compojure.route :as route]
+            [org.httpkit.server :as server]
             [ring.middleware.defaults :refer :all]
             [ring.middleware.file :refer :all]
             [ring.middleware.resource :refer :all]
@@ -12,20 +13,19 @@
 
 
 (defn handle-new-move [request]
-      (if (= @GAME_STATE [GAME_IN_PROGRESS])
-        (let [board (stringMapToKeywordMap (get-in request [:body :board]))
-              afterCallerMove (makeMove board
-                                        (keyword (get-in request [:body :move :field])),
-                                        (keyword (get-in request [:body :move :value])))
-              returnBoardAndStatus (if (or (= GAME_WON (afterCallerMove :status)) (= GAME_LOST (afterCallerMove :status)))
-                                      afterCallerMove
-                                     (cpuOpponentRandomMoves (afterCallerMove :board) :O))
-              ]
-          {:status  200
-           :headers {"Content-Type" "text/json"}
-           :body    (str (json/write-str returnBoardAndStatus))}
-        )))
-
+  (if (= @GAME_STATE [GAME_IN_PROGRESS])
+    (let [board (stringMapToKeywordMap (get-in request [:body :board]))
+          afterCallerMove (makeMove board
+                                    (keyword (get-in request [:body :move :field])),
+                                    (keyword (get-in request [:body :move :value])))
+          returnBoardAndStatus (if (or (= GAME_WON (afterCallerMove :status)) (= GAME_LOST (afterCallerMove :status)))
+                                  afterCallerMove
+                                 (cpuOpponentRandomMoves (afterCallerMove :board) :O))
+          ]
+      {:status  200
+       :headers {"Content-Type" "text/json"}
+       :body    (str (json/write-str returnBoardAndStatus))}
+    )))
 
 (use
   '[ring.middleware.json :only [wrap-json-body]]
@@ -36,16 +36,13 @@
 (defn handle-save [request]
   (println "SAVE:")
   (let [
+        save-fn (di-get :save)
         name (-> request :params :name)
         board (stringMapToKeywordMap (get-in request [:body :board]))
         result board
         ]
     (println name)
-    (saveBoard name board)
-    (println boardRepository)
-    (println (loadBoard name))
-    ; save to file:
-    ;(spit (str "/tmp/" name ".json") board)
+    (apply save-fn name board '())
     {:status  200
      :headers {"Content-Type" "text/json"}
      :body    (str (json/write-str result))})
@@ -57,14 +54,13 @@
 (defn handle-load [request]
   (println "LOAD:")
   (let [
+        load-fn (di-get :load)
         name (-> request :params :name)
-        board (loadBoard name)
+        board (apply load-fn name '())
         result {:board board :status GAME_IN_PROGRESS}
-        ]2
+        ]
     (println name)
     (println result)
-    ; save to file:
-    ;(spit (str "/tmp/" name ".json") board)
     {:status  200
      :headers {"Content-Type" "text/json"}
      :body    (str (json/write-str result))})
@@ -85,3 +81,14 @@
            (GET "/tictactoe/game/:name" [] handle-load-json)
            (route/not-found "Error, page not found!"))
 
+(defn start-web-server []
+  (let [port (Integer/parseInt (or (System/getenv "PORT") "3000"))
+        routeHandler (wrap-defaults #'app-routes api-defaults)
+        ]
+    ; Run the server with Ring.defaults middleware
+    (server/run-server (-> routeHandler
+                           (wrap-resource "public")) {:port port})
+    ; Run the server without ring defaults
+    ;(server/run-server #'app-routes {:port port})
+    (println (str "Running webserver at http:/127.0.0.1:" port "/")))
+  )
