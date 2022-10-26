@@ -3,6 +3,7 @@
   (:require [clojure-game-api.core :refer :all]
             [clojure.string :as string]
             [clojure.test :refer :all]
+            [clojure-game-api.web :refer :all]
             [ring.mock.request :as mock]))
 
 (deftest new-move-test

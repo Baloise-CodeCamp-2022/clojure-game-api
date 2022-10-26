@@ -1,14 +1,10 @@
 (ns clojure-game-api.core
-  (:require [clojure.data.json :as json]
+  (:require [clojure.java.io :refer :all]
             [clojure.set :as set]
             [compojure.core :refer :all]
-            [compojure.route :as route]
-            [org.httpkit.server :as server]
             [ring.middleware.defaults :refer :all]
             [ring.middleware.file :refer :all]
-            [ring.middleware.resource :refer :all]
-            [clojure.java.io :refer :all]
-            [ring.util.response :as resp])
+            [ring.middleware.resource :refer :all])
   (:gen-class))
 
 ; ------------------- TicTacToe --------------------------------
@@ -112,111 +108,3 @@
 (defn stringMapToKeywordMap [inMap]
   (into {} (for [[k v] inMap] [k (keyword v)])))
 
-(defn handle-new-move [request]
-  (let [board (stringMapToKeywordMap (get-in request [:body :board]))
-        afterCallerMove (makeMove board
-                                  (keyword (get-in request [:body :move :field])),
-                                  (keyword (get-in request [:body :move :value])))
-        returnBoardAndStatus (if (or (= GAME_WON (afterCallerMove :status)) (= GAME_LOST (afterCallerMove :status)) (= GAME_DRAW (afterCallerMove :status)))
-                               afterCallerMove
-                               (cpuOpponentRandomMoves (afterCallerMove :board) :O)) ;should be cpuPlayer
-        ]
-
-    {:status  200
-     :headers {"Content-Type" "text/json"}
-     :body    (str (json/write-str returnBoardAndStatus))})
-  )
-
-(use
-  '[ring.middleware.json :only [wrap-json-body]]
-  '[ring.util.response :only [response]])
-(def handle-new-move-json (wrap-json-body handle-new-move {:keywords? true}))
-
-; ----------------------------------
-(defn handle-save [request]
-  (println "SAVE:")
-  (let [
-        name (-> request :params :name)
-        board (stringMapToKeywordMap (get-in request [:body :board]))
-        result board
-        ]
-    (println name)
-    (saveBoard name board)
-    (println boardRepository)
-    (println (loadBoard name))
-    ; save to file:
-    ;(spit (str "/tmp/" name ".json") board)
-    {:status  200
-     :headers {"Content-Type" "text/json"}
-     :body    (str (json/write-str result))})
-  )
-
-(defn handle-save-json [request]
-  (wrap-json-body handle-save {:keywords? true}))
-
-(defn handle-load [request]
-  (println "LOAD:")
-  (let [
-        name (-> request :params :name)
-        board (loadBoard name)
-        result {:board board :status GAME_IN_PROGRESS}
-        ]
-    (println name)
-    (println result)
-    ; save to file:
-    ;(spit (str "/tmp/" name ".json") board)
-    {:status  200
-     :headers {"Content-Type" "text/json"}
-     :body    (str (json/write-str result))})
-  )
-
-(defn handle-load-json [request]
-  (wrap-json-body handle-load {:keywords? true}))
-
-(defn validateProgramArguments [args]
-    (def defaultProgramArguments ["human" "cpuOpponentRandomMoves"])
-    (if-not (= (count args) 2)
-        defaultProgramArguments
-        (if (not (set/subset? (into #{} args) validPlayers))
-            defaultProgramArguments
-            args
-        )
-    )
-)
-
-; ------------------- App --------------------------------
-(defroutes app-routes
-           ;(GET "/tictactoe" [] (resp/content-type (resp/resource-response "client.html") "text/html"))
-           ;(GET "/tictactoe" [] (resp/content-type (resp/resource-response "client.html") "text/html"))
-           (GET "/tictactoe" [] (resp/redirect "client.html"))
-           (POST "/tictactoe/move" [] handle-new-move-json)
-           (POST "/tictactoe/game/:name" [] handle-save-json)
-           (GET "/tictactoe/game/:name" [] handle-load-json)
-           (route/not-found "Error, page not found!"))
-
-
-(defn -main
-  "This is our main entry point"
-  ; args =  ["<first player>" "<second player>"]
-  ; Can be:
-  ;  ["human" "human"] - no CPU player, only the game board will be provided by the application
-  ;  ["human" "cpuOpponentRandomMoves"] - Human player starts, the opponent is "cpuOpponentRandomMoves" (default)
-  ;  ["human" "cpuOpponentBetterMoves"] - Human player starts, the opponent is a different CPU player.
-  ;  ["cpuOpponentRandomMoves" "human"] - CPU player starts.
-  ;  ["cpuOpponentRandomMoves" "cpuOpponentBetterMoves"] - Two CPU players, no user interaction.
-  ;
-  ; valid players are provided in the set validPlayers
-  [& args]
-
-
-  (def validProgramArguments (validateProgramArguments args))
-
-  (let [port (Integer/parseInt (or (System/getenv "PORT") "3000"))
-        routeHandler (wrap-defaults #'app-routes api-defaults)
-        ]
-    ; Run the server with Ring.defaults middleware
-    (server/run-server (-> routeHandler
-                           (wrap-resource "public")) {:port port})
-    ; Run the server without ring defaults
-    ;(server/run-server #'app-routes {:port port})
-    (println (str "Running webserver at http:/127.0.0.1:" port "/"))))
