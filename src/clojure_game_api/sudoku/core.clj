@@ -52,3 +52,18 @@
   (map (fn [y] (get (get board y) x)) (range 9)))
 (defn sRow [board y]
   (get board y))
+(defn sSquare [board x y]
+  "Get the square a positon x,y"
+  (let [i (quot x 3)
+        j (quot y 3)
+        startX (* i 3)
+        endX (+ startX 3)
+        startY (* j 3)
+        endY (+ startY 3)
+        ]
+    (for [u (range startX endX)
+          v (range startY endY)]
+      (getNumber board u v)
+      )
+    )
+  )
