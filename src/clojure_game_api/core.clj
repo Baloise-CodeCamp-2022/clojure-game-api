@@ -83,6 +83,7 @@
               GAME_DRAW
               )
             )]
+      (reset! GAME_STATE [gameStateUpdate])
       {:board newBoard :status gameStateUpdate}
       )))
 

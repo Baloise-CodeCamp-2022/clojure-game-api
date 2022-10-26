@@ -35,10 +35,10 @@
   [& args]
 
 
-  (def validProgramArguments (validateProgramArguments args))
+  (let [validProgramArguments (validateProgramArguments args)]
   (reset! di-context {
                       :save #'saveBoard
                       :load #'loadBoard
     })
-  (start-web-server)
-  )
+  (start-web-server))
+)
