@@ -11,6 +11,8 @@
 
 (defn setNumber [board x y n]
   (assoc board y (assoc (get board y) x n)))
+(defn getNumber [board x y]
+  (get (get board y) x)
 
 (def easy
   [
