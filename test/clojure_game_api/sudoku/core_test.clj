@@ -74,3 +74,17 @@
 (deftest validatesSetNumber_WrongNumber
          (testing "validating an invalid setNumber execution/n not in range"
                   (is (= error (validateSetNumber emptyBoard 0 0 98)))))
+
+(deftest validateSudoSolverEasyBoard
+         (def expected [[2 6 1 3 7 5 8 9 4]
+                        [5 3 7 8 9 4 1 6 2]
+                        [9 4 8 2 1 6 3 5 7]
+                        [6 9 4 7 5 1 2 3 8]
+                        [8 2 5 9 4 3 6 7 1]
+                        [7 1 3 6 2 8 9 4 5]
+                        [3 5 6 4 8 2 7 1 9]
+                        [4 8 9 1 6 7 5 2 3]
+                        [1 7 2 5 3 9 4 8 6]])
+         (testing ""
+                  (is (= expected (solveSudoku easyBoard))))
+)

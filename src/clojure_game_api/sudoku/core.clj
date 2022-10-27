@@ -5,6 +5,21 @@
 (def emptyBoard
   (vec (repeat 9 (vec (repeat 9 0)))))
 
+(def board9
+  ; source https://github.com/dimitri/sudoku/blob/master/sudoku.txt Grid09
+  [
+   [0 0 0 9 0 0 0 0 2]
+   [0 5 0 1 2 3 4 0 0]
+   [0 3 0 0 0 0 1 6 0]
+   [9 0 8 0 0 0 0 0 0]
+   [0 7 0 0 0 0 0 9 0]
+   [0 0 0 0 0 0 2 0 5]
+   [0 9 1 0 0 0 0 5 0]
+   [0 0 7 4 3 9 0 2 0]
+   [4 0 0 0 0 7 0 0 0]
+  ]
+)
+
 (def easyBoard
   [
    [0 6 0 3 0 0 8 0 4]
