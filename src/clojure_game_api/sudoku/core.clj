@@ -1,4 +1,6 @@
-(ns clojure-game-api.sudoku.core)
+(ns clojure-game-api.sudoku.core
+  (:require [clojure.set :as set])
+  )
 
 (def emptyBoard
   (vec (repeat 9 (vec (repeat 9 0)))))
@@ -24,25 +26,25 @@
   (let [erroneousNumbers (filter #(or (> % 9) (< % 0)) (flatten board))]
     (if (not (empty? erroneousNumbers))
       error
-    )))
+      )))
 
 (defn validateSetNumber [board x y n]
-   (if (or (> x 9) (< x 0))
-     error
-     (if (or (> y 9) (< y 0))
-       error
-       (if (or (> n 9) (< n 1))
-       error
-       (validateBoard board)
-       )
-     )))
+  (if (or (> x 9) (< x 0))
+    error
+    (if (or (> y 9) (< y 0))
+      error
+      (if (or (> n 9) (< n 1))
+        error
+        (validateBoard board)
+        )
+      )))
 
 
 (defn setNumber [board x y n]
-     (let [ validationCheck (validateSetNumber board x y n)]
-        (if (= nil validationCheck)
-          (assoc board y (assoc (get board y) x n))
-          validationCheck)))
+  (let [validationCheck (validateSetNumber board x y n)]
+    (if (= nil validationCheck)
+      (assoc board y (assoc (get board y) x n))
+      validationCheck)))
 
 (defn getNumber [board x y]
   (get (get board y) x))
@@ -64,6 +66,44 @@
     (for [u (range startX endX)
           v (range startY endY)]
       (getNumber board u v)
+      )
+    )
+  )
+
+(defn possis [board x y]
+  (let [allNums (into #{} (range 1 10))
+        existingNumbers
+        (into #{}
+              (flatten (conj (sCol board x)
+                             (sRow board y)
+                             (sSquare board x y)
+                             )))]
+    (set/difference allNums existingNumbers)
+    )
+  )
+
+(defn allPossis [board]
+  "Get a list of all possibilities for each field"
+  (for [x (range 9)
+        y (range 9)]
+    {
+     :X       x
+     :Y       y
+     :CURRENT (getNumber board x y)
+     :POSSIS  (possis board x y)
+     }
+    ))
+
+(defn solveSudoku [board]
+  (let [allPossis (allPossis board)
+        fieldsWithOnePossi
+        (filter (fn [x] (= (x :CURRENT) 0))
+                (filter (fn [x] (= 1 (count (x :POSSIS)))) allPossis))]
+    (if (empty? fieldsWithOnePossi)
+      board
+      (solveSudoku (reduce
+                     (fn [b field] (setNumber b (field :X) (field :Y) (first (field :POSSIS))))
+                     board fieldsWithOnePossi))
       )
     )
   )
