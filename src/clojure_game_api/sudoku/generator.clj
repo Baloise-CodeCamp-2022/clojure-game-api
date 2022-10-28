@@ -6,7 +6,7 @@
 
 (defn setField [firstEmptyField board]
   (let [
-        chosenNumber (first (firstEmptyField :POSSIS))
+        chosenNumber (last (firstEmptyField :POSSIS))
         x (firstEmptyField :X)
         y (firstEmptyField :Y)
         result (setNumber board x y chosenNumber)
@@ -36,7 +36,7 @@
         firstEmptyField (first emptyFieldsWithPossis)
         result (if (empty? emptyFieldsWithPossis) board (setField firstEmptyField board) )
         ]
-     (if (= initialFieldCount (count nonEmptyFields) )
+     (if (= (- initialFieldCount 1) (count nonEmptyFields) )
        result
        (generate3_initial result initialFieldCount) )
     )
@@ -66,14 +66,61 @@
     )
   )
 
-(defn generate3 []
+(defn generate3 [initial-number-count]
   (let [
-        initial-board (generate3_initial emptyBoard 5)
-        ;t0 (println initial-board)
+        initial-board (generate3_initial emptyBoard initial-number-count)
+        t0 (println initial-board)
         result (gsolveSudoku initial-board)
         ;t1 (println result)
         ]
     result
+    )
+  )
+
+
+(defn generate4 [initial-number-count]
+  (let [
+        initial-board (generate3_initial emptyBoard initial-number-count)
+        solvedBoard (gsolveSudoku initial-board)
+        userBoard (-> solvedBoard
+                     (resetCell 0 0)
+                     (resetCell 1 1)
+                     (resetCell 2 2)
+                     (resetCell 3 0)
+                     (resetCell 4 1)
+                     (resetCell 5 2)
+                     (resetCell 6 0)
+                     (resetCell 7 1)
+                     (resetCell 8 2)
+
+                     (resetCell 0 3)
+                     (resetCell 1 4)
+                     (resetCell 2 5)
+                     (resetCell 3 3)
+                     (resetCell 4 4)
+                     (resetCell 5 5)
+                     (resetCell 6 3)
+                     (resetCell 7 4)
+                     (resetCell 8 5)
+
+                     (resetCell 0 6)
+                     (resetCell 1 7)
+                     (resetCell 2 8)
+                     (resetCell 3 6)
+                     (resetCell 4 7)
+                     (resetCell 5 8)
+                     (resetCell 6 6)
+                     (resetCell 7 7)
+                     (resetCell 8 8)
+
+            )
+        solvedBoard2 (gsolveSudoku userBoard)
+        ]
+    (println initial-board)
+    (println solvedBoard)
+    (println userBoard)
+    (println solvedBoard2)
+    userBoard
     )
   )
 

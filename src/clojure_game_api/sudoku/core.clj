@@ -77,6 +77,9 @@
       (assoc board y (assoc (get board y) x n))
       validationCheck)))
 
+(defn resetCell [board x y]
+      (assoc board y (assoc (get board y) x 0)))
+
 (defn getNumber [board x y]
   (get (get board y) x))
 
