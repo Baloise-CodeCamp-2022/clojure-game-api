@@ -19,13 +19,24 @@
         fieldInfos (allPossis board)
         emptyFields (filter (fn [x] (= (x :CURRENT) 0)) fieldInfos)
         emptyFieldsWithPossis (filter (fn [f] (not ( empty? (f :POSSIS)))) emptyFields)
-        emptyFieldsWithoutPossis (filter (fn [f] ( empty? (f :POSSIS))) emptyFields)
         firstEmptyField (first emptyFieldsWithPossis)
-        ;t1 (println firstEmptyField)
-        ;t2 (println emptyFieldsWithoutPossis)
         result (if (empty? emptyFieldsWithPossis) board (setField firstEmptyField board) )
         ]
      (if (empty? emptyFieldsWithPossis) result (generate2 result) )
+    )
+  )
+
+; generate board with an given number of initialized fields
+(defn generate3 [board initialFieldCount]
+  (let [
+        fieldInfos (allPossis board)
+        emptyFields (filter (fn [x] (= (x :CURRENT) 0)) fieldInfos)
+        nonEmptyFields (filter (fn [x] (not (= (x :CURRENT) 0)) ) fieldInfos)
+        emptyFieldsWithPossis (filter (fn [f] (not ( empty? (f :POSSIS)))) emptyFields)
+        firstEmptyField (first emptyFieldsWithPossis)
+        result (if (empty? emptyFieldsWithPossis) board (setField firstEmptyField board) )
+        ]
+     (if (= initialFieldCount (count nonEmptyFields) ) result (generate3 result initialFieldCount) )
     )
   )
 
