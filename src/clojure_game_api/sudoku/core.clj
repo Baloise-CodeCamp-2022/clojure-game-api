@@ -129,11 +129,15 @@
 (defn tryPossis [board possis]
   (let [trials (filter #(some? %)
                        (for [n (possis :POSSIS)]
-                         (solveSudoku (setNumber board (possis :X) (possis :Y) n))))]
-    (if (empty? trials)
-      nil
-      (first trials)
+                         (solveSudoku (setNumber board (possis :X) (possis :Y) n))))
+        n (count trials)
+        ]
+    (cond
+      (= n 0) nil
+      (= n 1) (first trials)
+      (> n 1) (throw (Exception. "Not unique!"))
       )))
+
 
 (defn solveSudoku [board]
   (let [allPossis (sort-by #(count (% :POSSIS)) (filter #(= (% :CURRENT) 0) (allPossis board)))]
