@@ -17,8 +17,8 @@
    [0 9 1 0 0 0 0 5 0]
    [0 0 7 4 3 9 0 2 0]
    [4 0 0 0 0 7 0 0 0]
-  ]
-)
+   ]
+  )
 
 (def easyBoard
   [
@@ -109,16 +109,21 @@
      }
     ))
 
+(declare solveSudoku)
+(defn tryPossis [board possis]
+  (let [trials (filter #(some? %)
+                       (for [n (possis :POSSIS)]
+                         (solveSudoku (setNumber board (possis :X) (possis :Y) n))))]
+    (if (empty? trials)
+      nil
+      (first trials)
+      )))
+
 (defn solveSudoku [board]
-  (let [allPossis (allPossis board)
-        fieldsWithOnePossi
-        (filter (fn [x] (= (x :CURRENT) 0))
-                (filter (fn [x] (= 1 (count (x :POSSIS)))) allPossis))]
-    (if (empty? fieldsWithOnePossi)
+  (let [allPossis (sort-by #(count (% :POSSIS)) (filter #(= (% :CURRENT) 0) (allPossis board)))]
+    (if (empty? allPossis)
       board
-      (solveSudoku (reduce
-                     (fn [b field] (setNumber b (field :X) (field :Y) (first (field :POSSIS))))
-                     board fieldsWithOnePossi))
+      (tryPossis board (first allPossis))
       )
     )
   )
