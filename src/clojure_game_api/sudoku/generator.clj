@@ -11,19 +11,21 @@
         y (firstEmptyField :Y)
         result (setNumber board x y chosenNumber)
         ]
-    (println chosenNumber)
     result
     ))
 
-(defn generate1 [board]
+(defn generate2 [board]
   (let [
         fieldInfos (allPossis board)
-        firstEmptyField (first (filter (fn [x] (= (x :CURRENT) 0)) fieldInfos))
-        result (setField firstEmptyField board)
+        emptyFields (filter (fn [x] (= (x :CURRENT) 0)) fieldInfos)
+        emptyFieldsWithPossis (filter (fn [f] (not ( empty? (f :POSSIS)))) emptyFields)
+        emptyFieldsWithoutPossis (filter (fn [f] ( empty? (f :POSSIS))) emptyFields)
+        firstEmptyField (first emptyFieldsWithPossis)
+        ;t1 (println firstEmptyField)
+        ;t2 (println emptyFieldsWithoutPossis)
+        result (if (empty? emptyFieldsWithPossis) board (setField firstEmptyField board) )
         ]
-     (println firstEmptyField)
-     ;(println result)
-     result
+     (if (empty? emptyFieldsWithPossis) result (generate2 result) )
     )
   )
 
