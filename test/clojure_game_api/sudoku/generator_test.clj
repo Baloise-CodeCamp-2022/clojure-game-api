@@ -47,7 +47,7 @@
   (testing "generate_2"
     (is (= (generate2 emptyBoard) expected))))
 
-(deftest generate_3
+(deftest generate_3a
   (def expected [[7 6 0 0 0 0 0 0 0]
                  [1 0 0 0 0 0 0 0 0]
                  [4 0 0 0 0 0 0 0 0]
@@ -57,6 +57,20 @@
                  [9 0 0 0 0 0 0 0 0]
                  [5 0 0 0 0 0 0 0 0]
                  [8 0 0 0 0 0 0 0 0]])
+  (testing "generate_3a"
+    (is (= (generate3a emptyBoard) expected))))
+
+(deftest generate_3
+  (def expected [
+                 [7 6 9 1 5 2 4 3 8]
+                 [1 3 5 4 9 8 7 6 2]
+                 [4 2 8 7 3 6 9 1 5]
+                 [6 9 7 2 8 3 1 5 4]
+                 [3 5 1 9 7 4 2 8 6]
+                 [2 8 4 6 1 5 3 9 7]
+                 [9 7 6 5 4 1 8 2 3]
+                 [5 1 3 8 2 7 6 4 9]
+                 [8 4 2 3 6 9 5 7 1]])
   (testing "generate_3"
-    (is (= (generate3 emptyBoard 9) expected))))
+    (is (= (generate3) expected))))
 
