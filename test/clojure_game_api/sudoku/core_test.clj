@@ -76,7 +76,7 @@
     (is (= error (validateSetNumber emptyBoard 0 0 98)))))
 
 (deftest validateSudoSolverEasyBoard
-  (def expected [[2 6 1 3 7 5 8 9 4]
+  (let [ expected [[2 6 1 3 7 5 8 9 4]
                  [5 3 7 8 9 4 1 6 2]
                  [9 4 8 2 1 6 3 5 7]
                  [6 9 4 7 5 1 2 3 8]
@@ -84,13 +84,14 @@
                  [7 1 3 6 2 8 9 4 5]
                  [3 5 6 4 8 2 7 1 9]
                  [4 8 9 1 6 7 5 2 3]
-                 [1 7 2 5 3 9 4 8 6]])
+                 [1 7 2 5 3 9 4 8 6]]
+        ]
   (testing ""
-    (is (= expected (solveSudoku easyBoard))))
+    (is (= expected (solveSudoku easyBoard)))))
   )
 
 (deftest validateSudoSolverBoard9
-  (def expected [[8 1 4 9 7 6 5 3 2]
+  (let [ expected [[8 1 4 9 7 6 5 3 2]
                  [6 5 9 1 2 3 4 7 8]
                  [7 3 2 8 5 4 1 6 9]
                  [9 4 8 2 6 5 3 1 7]
@@ -99,7 +100,22 @@
                  [3 9 1 6 8 2 7 5 4]
                  [5 8 7 4 3 9 6 2 1]
                  [4 2 6 5 1 7 9 8 3]]
-    )
+        ]
   (testing "Solver solves board9"
-    (is (= expected (solveSudoku board9))))
+    (is (= expected (solveSudoku board9)))))
+  )
+
+(deftest validateSudoSolverBoardExpert
+  (let [ expected [[7 6 3 4 2 9 1 8 5]
+                 [4 1 5 3 7 8 9 6 2]
+                 [9 2 8 5 6 1 3 7 4]
+                 [3 9 6 7 4 5 2 1 8]
+                 [1 5 7 8 3 2 4 9 6]
+                 [2 8 4 1 9 6 7 5 3]
+                 [6 7 2 9 8 4 5 3 1]
+                 [8 3 1 2 5 7 6 4 9]
+                 [5 4 9 6 1 3 8 2 7]]
+    ]
+  (testing "Solver solves boardExpert"
+    (is (= expected (solveSudoku boardExpert)))))
   )
