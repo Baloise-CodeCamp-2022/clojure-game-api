@@ -1,14 +1,64 @@
-# Codecamp Instructions
+# Codecamp cljure-game experiments
+
+See <https://clojure-game-api.apps.okd.baloise.dev/tictactoe>
+
+## Codecamp Instructions
 
 - lein uberjar
 - docker build -t cc22/game-api
 - docker run -p 3000:3000 cc22/game-api
 - http://127.0.0.1:3000/people
 
+## Objectives & Lessons learned
 
-# Comparing strategies
+### "Prod first"
+
+All our experiments are built using a ci pipeline (gh actions) with
+Leiningen and the uberjar target. We
+deploy the artiacts on openshift: <https://github.com/baloise-incubator/code-camp-apps/tree/master/clojure-game>
+accessible
+below <https://clojure-game-api.apps.okd.baloise.dev/>.
+
+### "Real" application with web ui and persistence
+
+We wanted to write a "real" application with a web ui and some persistence --
+all stuff that is not purely functional. With clojure that was quite easily
+done with libs like ring or compojure. As to persistence we only used an
+in-memory store.
+
+### Use "clean architecture" patterns
+
+We wanted to have "clean" and "pure" core modules with no technical stuff in
+them and use the core from a web adapter or from a persistence adapter. In
+clojure we had to use a different way of addressing these issues from what
+we were used to in the java world. One can see the taken solution in
+the separation of the core, main and web modules. But as everything is
+public there is no guarantee that the core part does not call the web part
+directly.
+
+We tried to have a common web module which routes traffic to /tictactoe or
+to /sudoku respectively. But it should not know about routes below these
+contexts. But we never managed to do this in a good way.
+
+### Use test driven development
+
+We managed to start our tictactoe experiment with TDD - and this worked quite
+well. But then, we slowly grew accustomed to using the REPL and this was then
+the main driver for development. Like REPL, REPL, ... , Copy Impl from REPL and
+write a test.
+
+### Other remarks
+
+- Some of us used the cursive plugin in intellij. This provides a very good development experience.
+- The clojredocs are very good. In particular the examples are useful (eg <https://clojuredocs.org/clojure.core/take>)
+
+
+## Tictactow
+
+### Comparing strategies
 
 Use this to simulate a game of one strategy vs another:
+
 ```clojure
 (defn trial [p1 v1 p2 v2 board]
   (let [newBoardWithStatus (apply p1 board v1 '())]
@@ -18,66 +68,22 @@ Use this to simulate a game of one strategy vs another:
       (newBoardWithStatus :status)
       )))
 ```
+
 Call it like this:
+
 ```clojure
 (trial cpuOpponent2 :X cpuOpponentRandomMoves :O {})
 ```
+
 To simulate a lot of games and count results do this:
+
 ```clojure
-(sort 
-  (frequencies 
+(sort
+  (frequencies
     (take 1000 (repeatedly #(trial cpuOpponent2 :X cpuOpponentRandomMoves :O {})))))
 => (["DRAW" 171] ["LOST" 24] ["WON" 805])
 ```
 
+### Sudoku
 
-# clojure-game-api
 
-FIXME: description
-
-## Installation
-
-Download from http://example.com/FIXME.
-
-## Usage
-
-FIXME: explanation
-
-**build**:
-
-    $ lein uberjar
-
-**run**:
-
-    $ java -jar clojure-game-api-0.1.0-standalone.jar [args]
-
-## Options
-
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
-
-## License
-
-Copyright © 2022 FIXME
-
-This program and the accompanying materials are made available under the
-terms of the Eclipse Public License 2.0 which is available at
-http://www.eclipse.org/legal/epl-2.0.
-
-This Source Code may also be made available under the following Secondary
-Licenses when the conditions for such availability set forth in the Eclipse
-Public License, v. 2.0 are satisfied: GNU General Public License as published by
-the Free Software Foundation, either version 2 of the License, or (at your
-option) any later version, with the GNU Classpath Exception which is available
-at https://www.gnu.org/software/classpath/license.html.
