@@ -17,6 +17,7 @@
     (POST "/tictactoe/game/:name" [] handle-save-json)
     (GET "/tictactoe/game/:name" [] handle-load-json)
     (GET "/sudoku/:id" [id] (str "<h1>Hello user " id "</h1>"))
+    (GET "/sudoku/game/:name" [] handle-sudoku-load-json)
     (route/not-found "Error, page not found!"))
   )
 
