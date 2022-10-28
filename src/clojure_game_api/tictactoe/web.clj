@@ -72,7 +72,7 @@
 
 (defn handle-get-tictactoe [request]
       (reset! GAME_STATE [GAME_IN_PROGRESS])
-      (resp/content-type (resp/resource-response "client.html" {:root "public"}) "text/html"))
+      (resp/content-type (resp/resource-response "client.html" {:root "public/tictactoe"}) "text/html"))
 
 ; ------------------- App --------------------------------
 (def ttt-handlers '(
