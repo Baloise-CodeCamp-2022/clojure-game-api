@@ -1,4 +1,4 @@
-# Codecamp cljure-game experiments
+# Codecamp clojure-game experiments
 
 See <https://clojure-game-api.apps.okd.baloise.dev/tictactoe>
 
