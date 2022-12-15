@@ -53,7 +53,7 @@ write a test.
 - The clojredocs are very good. In particular the examples are useful (eg <https://clojuredocs.org/clojure.core/take>)
 
 
-## Tictactow
+## Tictactoe
 
 ### Comparing strategies
 
